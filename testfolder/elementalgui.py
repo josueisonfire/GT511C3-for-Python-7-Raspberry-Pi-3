@@ -75,7 +75,7 @@ if (result == 1):
     printOKload("Succesfully opened port to device.")
 else:
     printFLload("ERROR: Failed to open port to device. Check the connection, device power status, or connections.")
-printWorkload("Setting baud rate to device...")
+result = printWorkload("Setting baud rate to device...")
 if (result == 1):
     printOKload("Succesfully set baud rate of the device.")
 else:
