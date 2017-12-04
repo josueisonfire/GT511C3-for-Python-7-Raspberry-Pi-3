@@ -16,22 +16,22 @@ class bcolors:
 
 # code to init device. check availability of the port, and determines whether the fingerprint reader is connected or not.
 def initializeDevice():
-    int result = 1
+    result = 1
     return result
 
 # function to adjuct baud rate.
 def setBaudrate(brate = 9600):
-    int result = 1
+    result = 1
     return result
 
 # function to open the connection between the controller and the scanner.
 def openDevice():
-    int result = 1
+    result = 1
     return result
 
 # function to toggle LED value. Default call turns off the LED in the scanner.
 def setLED(sval = False):
-    int result = 1
+    result = 1
     return result
 
 # function to start the enrollment sequence.
@@ -60,7 +60,7 @@ def printFLload(msg):
 print bcolors.WARNING + bcolors.BOLD + "CLOUD-BAS: version [alpha] 0.17. SUNY KOREA, LEAD LABORATORIES & BLUE SMOKE LABS, in conjucntions with ITCCP. \n INITIALIZING BIOMETRIC ATTENDANCE SYSTEM... "
 
 # initialize device
-int result = 0
+result = 0
 # init device
 result = initializeDevice()
 if (result == 1):
