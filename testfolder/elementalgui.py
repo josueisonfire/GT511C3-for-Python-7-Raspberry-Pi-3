@@ -9,9 +9,9 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
-class state:
-    bool initialized = False
+# Figure this error later... :/
+# class state:
+#     bool initialized = False
 
 
 # code to init device. check availability of the port, and determines whether the fingerprint reader is connected or not.
