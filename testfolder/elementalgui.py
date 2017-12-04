@@ -16,6 +16,6 @@ print bcolors.WARNING + "WARNING: sadf;lkjasdf;lkjasdf;lkjasdflkjkj"
 print bcolors.FAIL + "FAIL: sadf;lkjasdf;lkjasdf;lkjasdf;lkjkasdf;lkjk"
 print bcolors.ENDC + "ENDC: I dunno what this hsit does... lol"
 print bcolors.BOLD + "BOLD: Here's some boldness."
-print bcolors.UNDERLINE + "UNDERLINE: Here's and underlines text!
+print bcolors.UNDERLINE + "UNDERLINE: Here's and underlines text!"
 
 # test some of the system.
