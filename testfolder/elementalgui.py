@@ -11,7 +11,7 @@ class bcolors:
 
 
 class state:
-    Boolean initialized = False
+    bool initialized = False
 
 
 # code to init device. check availability of the port, and determines whether the fingerprint reader is connected or not.
