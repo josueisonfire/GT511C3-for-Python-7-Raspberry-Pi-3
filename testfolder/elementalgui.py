@@ -21,7 +21,7 @@ def initializeDevice():
 
 # function to adjuct baud rate.
 def setBaudrate(brate = 9600):
-    result = 1
+    result = 0
     return result
 
 # function to open the connection between the controller and the scanner.
@@ -52,7 +52,7 @@ def printOKload(msg):
 
 # function to print fail message.
 def printFLload(msg):
-    print bcolors.ENDC + "[ " + bcolors.FAIL + bcolors.BOLD + "FAIL" + bcolors.ENDC + " ]  " + msg
+    print bcolors.ENDC + "[ " + bcolors.FAIL + bcolors.BOLD + "FAIL" + bcolors.ENDC + " ]  "+ bcolors.FAIL + bcolors.BOLD + msg
 
 def printWorkload(msg):
     print bcolors.WARNING + bcolors.BOLD + msg
