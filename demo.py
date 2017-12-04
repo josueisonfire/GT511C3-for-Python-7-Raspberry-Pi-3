@@ -5,9 +5,9 @@ import fingerpi as fp
 
 # import struct
 import time
-# import matplotlib.pyplot as plt
 import pickle
-
+import matplotlib.pyplot as plt
+import numpy as np
 
 def printByteArray(arr):
     return map(hex, list(arr))
@@ -42,8 +42,8 @@ print 'Transmitting image...'
 t = time.time()
 raw_img = f.GetImage()
 tx_time = time.time() - t
-# print raw_img[0]['ACK'],
-# print raw_img[1]['Checksum']
+print raw_img[0]['ACK'],
+print raw_img[1]['Checksum']
 print 'Time to transmit:', tx_time
 
 print 'Closing connection...'
@@ -52,5 +52,27 @@ f.Close()
 with open('raw_img.pickle', 'w') as f:
     pickle.dump(raw_img, f)
 
-# f = figure()
-# f.imshow()
+time.sleep(5.5)
+
+with open('raw_img.pickle', 'r') as f:
+    raw_image = pickle.load(f)
+
+dim = raw_image[1]['Data'][1]
+img = bytearray(raw_image[1]['Data'][0])
+print "Min, Max: ", (min(img), max(img))
+print "Length:", len(img)
+
+img = np.reshape(img, dim)
+print "Dimensions: ", img.shape
+fig = plt.imshow(img, cmap = 'gray')
+fig.axes.get_xaxis().set_visible(False)
+fig.axes.get_yaxis().set_visible(False)
+plt.axis('off')
+
+plt.savefig('demo_temp.png',
+            bbox_inches='tight',
+            pad_inches=-.1,
+            frameon=False,
+            transparent=False
+)
+

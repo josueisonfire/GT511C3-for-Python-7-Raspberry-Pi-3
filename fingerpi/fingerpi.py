@@ -6,12 +6,15 @@ import serial
 
 from .base import *
 
+#ughh so here's the fingerPi Objects, which basically manages all the commands and receives from the GT511C3 sensor.
+
 class FingerPi():
+	#Constructor
     def __init__(self,
-                 port = '/dev/ttyAMA0',
-                 baudrate = 9600,
-                 device_id = 0x01,
-                 timeout = 2,
+                 port = '/dev/ttyAMA0', #This port by default. If another port must be used, modify accordingly.
+                 baudrate = 9600,		#initial baudrate at which the serrial communications takes place. The fingerprint module inits the baudrate at 9600 default.
+                 device_id = 0x01,		#lol...  in the pickle output, it is liseted as the 6th param. The device ID as registered. --- must be a way to change this.
+                 timeout = 2,			#timeout time frame. If the sensor fails to respond in 2 seconds, the timeout error will be shown. May increase to get higher timeout thresholds.
                  *args, **kwargs):
         self.port = port
         self.baudrate = baudrate
