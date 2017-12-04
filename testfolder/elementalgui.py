@@ -1,3 +1,4 @@
+# predefine ANSI Font color/style schematics.
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -8,16 +9,67 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-# print bcolors.WARNING + "Warning: No active frommets remain. Continue?"
-# print bcolors.HEADER + "HEADER"
-# print bcolors.OKBLUE + "OKBLUE: asdf;lkjasdf;lkjasdf;lkj"
-# print bcolors.OKGREEN + "OKGREEN: sadf;lkjasdf;lkkjasdf;lkjasdf;lkj"
-# print bcolors.WARNING + "WARNING: sadf;lkjasdf;lkjasdf;lkjasdflkjkj"
-# print bcolors.FAIL + "FAIL: sadf;lkjasdf;lkjasdf;lkjasdf;lkjkasdf;lkjk"
-# print bcolors.ENDC + "ENDC: I dunno what this hsit does... lol"
-# print bcolors.BOLD + "BOLD: Here's some boldness."
-# print bcolors.UNDERLINE + "UNDERLINE: Here's and underlines text!"
 
-print bcolors.ENDC + "[  " + bcolors.OKGREEN + bcolors.BOLD + "OK" + bcolors.ENDC + "  ]  Succesfully created dank meme." 
+class state:
+    boolean initialized = False
 
-# test some of the system.
+
+# code to init device. check availability of the port, and determines whether the fingerprint reader is connected or not.
+def initializeDevice():
+    int result = 1
+    return result
+
+# function to adjuct baud rate.
+def setBaudrate(brate = 9600):
+    int result = 1
+    return result
+
+# function to open the connection between the controller and the scanner.
+def openDevice():
+    int result = 1
+    return result
+
+# function to toggle LED value. Default call turns off the LED in the scanner.
+def setLED(sval = False):
+    int result = 1
+    return result
+
+# function to start the enrollment sequence.
+def enrollSeq(): #parameters are still undef.
+    return True
+
+# function to connect the module to the remote database.
+def dbaseConnect():
+    return True
+
+# function to send any detected fingerprints scans to the database.
+def sendInfo():
+    return True
+
+# function that print ok message.
+def printOKload(msg):
+    print bcolors.ENDC + "[  " + bcolors.OKGREEN + bcolors.BOLD + "OK" + bcolors.ENDC + "  ]  " + msg
+
+# function to print fail message.
+def printFLload(msg):
+    print bcolors.ENDC + "[ " + bcolors.FAIL + bcolors.BOLD + "FAIL" + bcolors.ENDC + " ]  " + msg
+
+
+
+# main GUI.
+print bcolors.WARNING + bcolors.BOLD + "CLOUD-BAS: version [alpha] 0.17. SUNY KOREA, LEAD LABORATORIES & BLUE SMOKE LABS, in conjucntions with ITCCP. \n INITIALIZING BIOMETRIC ATTENDANCE SYSTEM... "
+
+# initialize device
+int result = 0
+# init device
+result = initializeDevice()
+if (result == 1):
+    printOKload("Succesfully initialized device.")
+else:
+    printFLload("ERROR: Failed to initialize device. Check the connection, device power status, or connections.")
+# open device
+result = openDevice()
+if (result == 1):
+    printOKload("Succesfully opened port to device.")
+else:
+    printFLload("ERROR: Failed to open port to device. Check the connection, device power status, or connections.")
