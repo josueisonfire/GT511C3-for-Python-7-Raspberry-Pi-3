@@ -18,6 +18,6 @@ class bcolors:
 # print bcolors.BOLD + "BOLD: Here's some boldness."
 # print bcolors.UNDERLINE + "UNDERLINE: Here's and underlines text!"
 
-print bcolors.ENDC "[  " + bcolors.OKGREEN + bcolors.BOLD + "OK" + bcolors.ENDC + "  ]  Succesfully created dank meme." 
+print bcolors.ENDC + "[  " + bcolors.OKGREEN + bcolors.BOLD + "OK" + bcolors.ENDC + "  ]  Succesfully created dank meme." 
 
 # test some of the system.
