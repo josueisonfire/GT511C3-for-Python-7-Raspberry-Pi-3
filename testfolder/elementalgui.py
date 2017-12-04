@@ -9,3 +9,11 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 print bcolors.WARNING + "Warning: No active frommets remain. Continue?" + bcolors.ENDC
+print bcolors.HEADER + "HEADER" + bcolors.BOLD
+print bcolors.OKBLUE + "OKBLUE: asdf;lkjasdf;lkjasdf;lkj"
+print bcolors.OKGREEN + "OKGREEN: sadf;lkjasdf;lkkjasdf;lkjasdf;lkj"
+print bcolors.WARNING + "WARNING: sadf;lkjasdf;lkjasdf;lkjasdflkjkj"
+print bcolors.FAIL + "FAIL: sadf;lkjasdf;lkjasdf;lkjasdf;lkjkasdf;lkjk"
+print bcolors.ENDC + "ENDC: I dunno what this hsit does... lol"
+print bcolors.BOLD + "BOLD: Here's some boldness."
+print bcolors.UNDERLINE + "UNDERLINE: Here's and underlines text!"
