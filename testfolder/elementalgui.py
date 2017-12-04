@@ -54,10 +54,11 @@ def printOKload(msg):
 def printFLload(msg):
     print bcolors.ENDC + "[ " + bcolors.FAIL + bcolors.BOLD + "FAIL" + bcolors.ENDC + " ]  " + msg
 
-
+def printWorkload(msg):
+    print bcolors.WARNING + bcolors.BOLD + msg
 
 # main GUI.
-print bcolors.WARNING + bcolors.BOLD + "CLOUD-BAS: version [alpha] 0.17. SUNY KOREA, LEAD LABORATORIES & BLUE SMOKE LABS, in conjucntions with ITCCP. \n INITIALIZING BIOMETRIC ATTENDANCE SYSTEM... "
+print bcolors.WARNING + bcolors.BOLD + "CLOUD-BAS: version [alpha] 0.17. SUNY KOREA, LEAD LABORATORIES & BLUE SMOKE LABS, in conjunction with ITCCP.\nINITIALIZING BIOMETRIC ATTENDANCE SYSTEM... "
 
 # initialize device
 result = 0
@@ -68,8 +69,14 @@ if (result == 1):
 else:
     printFLload("ERROR: Failed to initialize device. Check the connection, device power status, or connections.")
 # open device
+printWorkload("Opening port to GT511C3 Fingerprint Scanner Module...")
 result = openDevice()
 if (result == 1):
     printOKload("Succesfully opened port to device.")
 else:
     printFLload("ERROR: Failed to open port to device. Check the connection, device power status, or connections.")
+printWorkload("Setting baud rate to device...")
+if (result == 1):
+    printOKload("Succesfully set baud rate of the device.")
+else:
+    printFLload("ERROR: Failed to set baud rate. check device connetions and baud rate value parameter values.")
