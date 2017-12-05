@@ -35,7 +35,7 @@ class Commands():
             str(self._firmware),
             str(self._serial_no)
         )
-        printWorkload("FPS Status: Port:" + self.status + " baudrate: " + self._baudrate + " firmware: " + self._firmware + " serial no.:" + self._serial_no)
+        printWorkload("FPS Status: Port:" + str(self.status) + " baudrate: " + str(self._baudrate) + " firmware: " + str(self._firmware) + " serial no.:" + str(self._serial_no))
 # ERROR CODES:
 # [0,0] = device is already initialized.
 # [0,1] = device's port is not reachable.
