@@ -107,7 +107,7 @@ def decode_command_packet(packet):
     print "BASE.PY, PARAMETER VAL: " + str(response['Parameter'])
     print "BASE.PY, DeviceID VAL: " + str(response['DeviceID'])
     print "BASE.PY, ACk VAL: " + str(response['ACK'])
-    print "BASE.PY, HEADER VAL: " + str(response['HEADER'])
+    print "BASE.PY, HEADER VAL: " + str(response['Header'])
 
     response['Parameter'] = errors(packet[3]) if (not response['ACK'] and packet[3] in errors) else packet[3]
 
