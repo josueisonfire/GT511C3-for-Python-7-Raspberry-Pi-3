@@ -528,7 +528,7 @@ setBaudrate(brate = 115200)
 time.sleep(0.3498)
 localFPS._update_status()
 
-setLED(led = True)
+setLED(sval = True)
 time.sleep(1)
 setLED()
 time.sleep(1)
