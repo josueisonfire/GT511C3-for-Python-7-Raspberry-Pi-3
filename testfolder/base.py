@@ -104,7 +104,7 @@ def decode_command_packet(packet):
     response['DeviceID'] = hex(packet[2])[2:]
     response['ACK'] = packet[4] != 0x31 # Not NACK, might be command
     # response['Parameter'] = packet[3] if response['ACK'] else errors[packet[3]]
-    print "BASE.PY, PARAMETER VAL: " + str(response['Parameter'])
+    print "BASE.PY, PARAMETER VAL: " + str(response['Parameter']) + " HEADER: " + str(response('HEADER')) + " DeviceID: " + str(response('DeviceID')) + " ACK: " + str(response('ACK'))
     response['Parameter'] = errors(packet[3]) if (not response['ACK'] and packet[3] in errors) else packet[3]
 
     return response
