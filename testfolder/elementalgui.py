@@ -26,10 +26,10 @@ class Commands():
 # print status.
     def _update_status(self):
         if self.open:
-            self.__status = 'Open'
+            self.status = 'Open'
         else:
-            self.__status = 'Closed'
-        printWorkload("FPS Status: Port:" + self._status + " baudrate: " + self._baudrate + " firmware: " + self._firmware + " serial no.:" + self._serial_no)
+            self.status = 'Closed'
+        printWorkload("FPS Status: Port:" + self.status + " baudrate: " + self._baudrate + " firmware: " + self._firmware + " serial no.:" + self._serial_no)
 # ERROR CODES:
 # [0,0] = device is already initialized.
 # [0,1] = device's port is not reachable.
