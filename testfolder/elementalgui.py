@@ -451,7 +451,7 @@ class bcolors:
 #     bool initialized = False
 
 # instantiate commands class. aka instantiating device object device
-global localFPS = Commands()
+localFPS = Commands()
 
 # code to init device. check availability of the port, and determines whether the fingerprint reader is connected or not.
 def initializeDevice():
