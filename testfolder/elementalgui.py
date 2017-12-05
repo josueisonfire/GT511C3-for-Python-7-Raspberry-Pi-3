@@ -108,7 +108,7 @@ class Commands():
         else:
             raise NackError(response[0]['Parameter'])
             result = [0,2]
-        return = result
+        return result
 
     def Blink(self, *args, **kwargs):
         if not self.open:
