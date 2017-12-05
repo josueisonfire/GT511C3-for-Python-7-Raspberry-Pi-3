@@ -481,9 +481,9 @@ def closeDevice():
     return result
 # function to toggle LED value. Default call turns off the LED in the scanner.
 def setLED(sval = False):
-    print "Setting LED value to " + sval
+    print "Setting LED value to " + str(sval)
     result = localFPS.CmosLed(led = sval)
-    print "SET LED Function ret Value: " + result
+    print "SET LED Function ret Value: " + str(result)
     return result
 
 # function to start the enrollment sequence.
