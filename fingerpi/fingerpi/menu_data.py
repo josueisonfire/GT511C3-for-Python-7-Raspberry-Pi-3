@@ -1,4 +1,4 @@
-import struct 
+import struct
 
 import curses
 
@@ -31,7 +31,6 @@ class RepeatingTimer(object):
         self.timer.start()
 
 port = '/dev/ttyAMA0'
-        
 MENU = "menu"
 COMMAND = "command"
 EXITMENU = "exitmenu"
@@ -51,12 +50,12 @@ menu_data = {
         { 'title': "Initialize", 'type': COMMAND, 'command': 'Initialize', 'kwargs':{} },
         { 'title': "Open", 'type': COMMAND, 'command': 'Open', 'kwargs':{} },
         { 'title': "Change Baudrate", 'type': MENU, 'subtitle': 'Please select and option...',
-        'options': [ 
+        'options': [
             { 'title': str(x), 'type': COMMAND, 'command': 'ChangeBaudrate', 'kwargs': {'baudrate': x} } for x in BAUDRATES
         ]},
         { 'title': "Blink", 'type': COMMAND, 'command': 'Blink', 'kwargs':{} },
         { 'title': "Enroll Sequence", 'type': COMMAND, 'command': '', 'kwargs':{} },
-        { 'title': "All Commands", 'type': MENU, 'subtitle': "Please select an option...", 
+        { 'title': "All Commands", 'type': MENU, 'subtitle': "Please select an option...",
         'options': [
             { 'title': "Open", 'type': COMMAND, 'command': 'Open', 'kwargs':{} },
             { 'title': "Close", 'type': COMMAND, 'command': 'Close', 'kwargs':{} },
@@ -85,7 +84,7 @@ class Commands():
         self._serial_no = 'N/A'
 
     def _update_status(self):
-        if self.open: 
+        if self.open:
             __status = 'Open'
         else:
             __status = 'Closed'
@@ -95,7 +94,7 @@ class Commands():
             str(self._firmware),
             str(self._serial_no)
         )
-        
+
     def Initialize(self, *args, **kwargs):
         if self._f is not None:
             raise AlreadyInitializedError('This device is already initialized')
@@ -148,7 +147,7 @@ class Commands():
             t.cancel()
             self.CmosLed(led = False)
             self._led = False
-            
+
         return ['', None]
 
     ####################################################################
@@ -279,7 +278,7 @@ class Commands():
         # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
         curses.echo()
         ret = [False, None]
-        while True: 
+        while True:
             screen.addstr(2, 2, '>>> ')
             screen.clrtoeol()
             screen.border(0)
@@ -350,7 +349,7 @@ class Commands():
         # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
         curses.echo()
         ret = [False, None]
-        while True: 
+        while True:
             screen.addstr(2, 2, '>>> ')
             screen.clrtoeol()
             screen.border(0)
@@ -391,7 +390,7 @@ class Commands():
         # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
         curses.echo()
         ret = [False, None]
-        while True: 
+        while True:
             screen.addstr(2, 2, '>>> ')
             screen.clrtoeol()
             screen.border(0)
@@ -448,7 +447,7 @@ class Commands():
         # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
         curses.echo()
         ret = [False, None]
-        while True: 
+        while True:
             screen.addstr(2, 2, '>>> ')
             screen.clrtoeol()
             screen.border(0)
@@ -472,25 +471,3 @@ class Commands():
                 break
         curses.noecho()
         return ret
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-        

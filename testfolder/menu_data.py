@@ -1,15 +1,15 @@
-# imports & other misc stuff.
+import struct 
 
-import structs
+import curses
+
 from time import sleep
 from threading import Timer
+
+import pickle
+
 from .exceptions import *
 import fingerpi as fp
 
-# Global variables:
-port = '/dev/ttyAMA0'
-
-# repeating timer.
 class RepeatingTimer(object):
     def __init__(self, interval, f, *args, **kwargs):
         self.interval = interval
@@ -30,7 +30,47 @@ class RepeatingTimer(object):
         self.timer = Timer(self.interval, self.callback)
         self.timer.start()
 
-# commands class:
+port = '/dev/ttyAMA0'
+        
+MENU = "menu"
+COMMAND = "command"
+EXITMENU = "exitmenu"
+
+BAUDRATES = [9600,
+             # 14400,
+             19200,
+             # 28800,
+             38400,
+             # 56000,
+             57600,
+             115200]
+## NOTE: `curses.window` is passed as the first argument to every function!
+menu_data = {
+    'title': "GT-511C3 UART", 'type': MENU, 'subtitle': "Please select an option...",
+    'options':[
+        { 'title': "Initialize", 'type': COMMAND, 'command': 'Initialize', 'kwargs':{} },
+        { 'title': "Open", 'type': COMMAND, 'command': 'Open', 'kwargs':{} },
+        { 'title': "Change Baudrate", 'type': MENU, 'subtitle': 'Please select and option...',
+        'options': [ 
+            { 'title': str(x), 'type': COMMAND, 'command': 'ChangeBaudrate', 'kwargs': {'baudrate': x} } for x in BAUDRATES
+        ]},
+        { 'title': "Blink", 'type': COMMAND, 'command': 'Blink', 'kwargs':{} },
+        { 'title': "Enroll Sequence", 'type': COMMAND, 'command': '', 'kwargs':{} },
+        { 'title': "All Commands", 'type': MENU, 'subtitle': "Please select an option...", 
+        'options': [
+            { 'title': "Open", 'type': COMMAND, 'command': 'Open', 'kwargs':{} },
+            { 'title': "Close", 'type': COMMAND, 'command': 'Close', 'kwargs':{} },
+            { 'title': "USB Internal Check", 'type': COMMAND, 'command': 'UsbInternalCheck', 'kwargs':{} },
+            { 'title': "LED on/off", 'type': COMMAND, 'command': 'CmosLed', 'kwargs':{} },
+            { 'title': "Get Enroll Count", 'type': COMMAND, 'command': 'GetEnrollCount', 'kwargs':{} },
+            { 'title': "Check Enrolled", 'type': COMMAND, 'command': 'CheckEnrolled', 'kwargs':{} },
+            { 'title': "Start Enrollment", 'type': COMMAND, 'command': 'EnrollStart', 'kwargs':{} },
+            { 'title': "Is Finger Pressed?", 'type': COMMAND, 'command': 'IsPressFinger', 'kwargs':{} },
+            { 'title': "Get Image", 'type': COMMAND, 'command': 'GetImage', 'kwargs':{} },
+        ]},
+    ]
+}
+
 class Commands():
     ## Every method has to return `status` array of size 2
     def __init__(self):
@@ -45,7 +85,7 @@ class Commands():
         self._serial_no = 'N/A'
 
     def _update_status(self):
-        if self.open:
+        if self.open: 
             __status = 'Open'
         else:
             __status = 'Closed'
@@ -55,7 +95,7 @@ class Commands():
             str(self._firmware),
             str(self._serial_no)
         )
-
+        
     def Initialize(self, *args, **kwargs):
         if self._f is not None:
             raise AlreadyInitializedError('This device is already initialized')
@@ -64,7 +104,6 @@ class Commands():
             self._f = fp.FingerPi(port = port)
         except IOError as e:
             raise PortError(str(e))
-
         # self._status = 'Initialized' # Change that to `closed`
         self._update_status()
         return [None, None]
@@ -109,7 +148,7 @@ class Commands():
             t.cancel()
             self.CmosLed(led = False)
             self._led = False
-
+            
         return ['', None]
 
     ####################################################################
@@ -240,7 +279,7 @@ class Commands():
         # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
         curses.echo()
         ret = [False, None]
-        while True:
+        while True: 
             screen.addstr(2, 2, '>>> ')
             screen.clrtoeol()
             screen.border(0)
@@ -311,7 +350,7 @@ class Commands():
         # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
         curses.echo()
         ret = [False, None]
-        while True:
+        while True: 
             screen.addstr(2, 2, '>>> ')
             screen.clrtoeol()
             screen.border(0)
@@ -352,7 +391,7 @@ class Commands():
         # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
         curses.echo()
         ret = [False, None]
-        while True:
+        while True: 
             screen.addstr(2, 2, '>>> ')
             screen.clrtoeol()
             screen.border(0)
@@ -409,7 +448,7 @@ class Commands():
         # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
         curses.echo()
         ret = [False, None]
-        while True:
+        while True: 
             screen.addstr(2, 2, '>>> ')
             screen.clrtoeol()
             screen.border(0)
@@ -435,103 +474,23 @@ class Commands():
         return ret
 
 
-# predefine ANSI Font color/style schematics.
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
-# Figure this error later... :/
-# class state:
-#     bool initialized = False
 
-# instantiate commands class. aka instantiating device object device
-global localFPS = Commands()
 
-# code to init device. check availability of the port, and determines whether the fingerprint reader is connected or not.
-def initializeDevice():
-    if (localFPS.Initialize() == [None, None]):
-        printOKload("Succesfully initialized device.")
-        result = 1
-    else:
-        printFLload("ERROR: Failed to initialize device. Check the connection, device power status, or connections.")
-        result = 0
-    return result
 
-# function to adjuct baud rate.
-def setBaudrate(brate = 9600):
-    printWorkload("Setting baud rate to device...")
-    if (localFPS.ChangeBaudrate() == [None, None]):
-        printOKload("Succesfully set baud rate of the device.")
-        result = 1
-    else:
-        printFLload("ERROR: Failed to set baud rate. check device connetions and baud rate value parameter values.")
-        result = 0
-    return result
 
-# function to open the connection between the controller and the scanner.
-def openDevice():
-    printWorkload("Opening port to GT511C3 Fingerprint Scanner Module...")
-    if (localFPS.Open() == [None, None]):
-        printOKload("Succesfully opened port to device.")
-        result = 1
-    else:
-        printFLload("ERROR: Failed to open port to device. Check the connection, device power status, or connections.")
-        result = 0
-    return result
 
-# function to close connection between the controller and FPS.
-def closeDevice():
-    printWorkload("Closing port to GT511C3 Fingerprint Scanner Module...")
-    if (localFPS.Close() == [None, None]):
-        printOKload("Succesfully closed port to device.")
-        result = 1
-    else:
-        printFLload("ERROR: Failed to close connection between Fingerprint Scanner Module. was the device already closed? Was it initialized int he first place?")
-        result = 0
-    return result
-# function to toggle LED value. Default call turns off the LED in the scanner.
-def setLED(sval = False):
-    result = 1
-    return result
 
-# function to start the enrollment sequence.
-def enrollSeq(): #parameters are still undef.
-    return True
 
-# function to connect the module to the remote database.
-def dbaseConnect():
-    return True
 
-# function to send any detected fingerprints scans to the database.
-def sendInfo():
-    return True
 
-# function that print ok message.
-def printOKload(msg):
-    print bcolors.ENDC + "[  " + bcolors.OKGREEN + bcolors.BOLD + "OK" + bcolors.ENDC + "  ]  " + msg
 
-# function to print fail message.
-def printFLload(msg):
-    print bcolors.ENDC + "[ " + bcolors.FAIL + bcolors.BOLD + "FAIL" + bcolors.ENDC + " ]  "+ bcolors.FAIL + bcolors.BOLD + msg
 
-def printWorkload(msg):
-    print bcolors.WARNING + bcolors.BOLD + msg
 
-# THE GUI code.
 
-# main GUI.
-print bcolors.WARNING + bcolors.BOLD + "CLOUD-BAS: version [alpha] 0.17. SUNY KOREA, LEAD LABORATORIES & BLUE SMOKE LABS, in conjunction with ITCCP.\nINITIALIZING BIOMETRIC ATTENDANCE SYSTEM... "
 
-# initialize device
-result = 0
-initializeDevice()
 
-# open device
 
-openDevice()
+
+        
+        
