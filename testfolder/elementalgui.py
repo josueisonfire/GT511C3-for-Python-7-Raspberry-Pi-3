@@ -55,25 +55,42 @@ class Commands():
             str(self._firmware),
             str(self._serial_no)
         )
+# ERROR CODES:
+# [0,0] = device is already initialized.
+# [0,1] = device's port is not reachable.
+
+
 
     def Initialize(self, *args, **kwargs):
         if self._f is not None:
             raise AlreadyInitializedError('This device is already initialized')
-
-        try:
-            self._f = fp.FingerPi(port = port)
-        except IOError as e:
-            raise PortError(str(e))
+            result = [0,0]
+        else:
+            try:
+                self._f = fp.FingerPi(port = port)
+                result = [None, None]
+            except IOError as e:
+                raise PortError(str(e))
+                result = [0,1]
 
         # self._status = 'Initialized' # Change that to `closed`
         self._update_status()
-        return [None, None]
+        return result
+
+# ERROR Codes:
+# [0,0] = device already open.
+# [0,1] = device uninitialized.
+# [0,2] = device open request provided invalid parameters.
 
     def Open(self, *args, **kwargs):
         if self.open:
+            result = [0,0]
             raise AlreadyOpenError('This device is already open')
+
         if self._f is None:
+            result = [0,1]
             raise NotInitializedError('Please, initialize first!')
+
 
         # self._f.serial.reset_input_buffer()
 
@@ -85,12 +102,13 @@ class Commands():
             self._baudrate = response[0]['Parameter']
             self._firmware = data[0]
             self._serial_no = str(bytearray(data[2:])).encode('hex')
-
+            result = [None, None]
             self.open = True # Show the default status iff NOT initialized!
             self._update_status()
         else:
             raise NackError(response[0]['Parameter'])
-        return [None, None]
+            result = [0,2]
+        return = result
 
     def Blink(self, *args, **kwargs):
         if not self.open:
@@ -115,15 +133,23 @@ class Commands():
     ####################################################################
     ## All (other) commands:
 
+    # ERROR Codes:
+    # [0,0] = port is not open. cannot close.
+    # [0,2] = device close request provided invalid parameters.
+
     def Close(self, *args, **kwargs):
         if not self.open:
+            result = [0,0]
             raise NotOpenError('Please, open the port first!')
         response = self._f.Close()
         if not response[0]['ACK']:
+            result = [0,2]
             raise NackError(response[0]['Parameter'])
+        else:
+            result = [None, None]
         self.open = False
         self._update_status()
-        return [None, None]
+        return result
 
     def UsbInternalCheck(self, *args, **kwargs):
         if not self.open:
@@ -466,7 +492,7 @@ def initializeDevice():
 # function to adjuct baud rate.
 def setBaudrate(brate = 9600):
     printWorkload("Setting baud rate to device...")
-    if (localFPS.ChangeBaudrate() == [None, None]):
+    if (localFPS.ChangeBaudrate(rate = brate) == [None, None]):
         printOKload("Succesfully set baud rate of the device.")
         result = 1
     else:
@@ -531,7 +557,9 @@ print bcolors.WARNING + bcolors.BOLD + "CLOUD-BAS: version [alpha] 0.17. SUNY KO
 # initialize device
 result = 0
 initializeDevice()
-
 # open device
-
 openDevice()
+# change baud rate
+ChangeBaudrate(brate = 115200)
+
+closeDevice()
