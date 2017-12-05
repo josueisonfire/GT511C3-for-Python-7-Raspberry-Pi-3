@@ -505,17 +505,14 @@ time.sleep(0.1)
 localFPS._update_status()
 # open device
 openDevice()
-time.sleep(1)
 localFPS._update_status()
 # change baud rate
 setBaudrate(brate = 115200)
-time.sleep(0.3498)
 localFPS._update_status()
 
 setLED(sval = True)
-time.sleep(1)
+time.sleep(0.2)
 setLED()
-time.sleep(1)
 
 enrollSeq()
 
