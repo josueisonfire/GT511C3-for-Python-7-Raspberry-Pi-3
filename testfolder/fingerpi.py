@@ -4,7 +4,7 @@
 import os, sys
 import serial
 
-from .base import *
+from base import *
 
 #ughh so here's the fingerPi Objects, which basically manages all the commands and receives from the GT511C3 sensor.
 
@@ -33,7 +33,7 @@ class FingerPi():
         self.serial.flushInput()
         self.serial.flushOutput()
 
-    
+
     ##########################################################
     ## Send/Get routines
 
@@ -82,7 +82,7 @@ class FingerPi():
                         # Decoded something
                         response['Parameter'] = baudrate
                         break
-                    
+
             if self.serial.baudrate > 115200: # Cannot be more than that
                 raise RuntimeError("Couldn't find appropriate baud rate!")
         else:
@@ -102,7 +102,7 @@ class FingerPi():
             self.serial.flushOutput()
             self.serial.close()
             return [response, None]
-        
+
         else:
             raise RuntimeError("Couldn't send packet")
 
@@ -309,4 +309,3 @@ class FingerPi():
             return [self.getResponse(), None]
         else:
             raise RuntimeError("Couldn't send packet")
-
