@@ -29,6 +29,12 @@ class Commands():
             self.status = 'Open'
         else:
             self.status = 'Closed'
+        self.status = self._status_template % (
+            __status,
+            str(self._baudrate),
+            str(self._firmware),
+            str(self._serial_no)
+        )
         printWorkload("FPS Status: Port:" + self.status + " baudrate: " + self._baudrate + " firmware: " + self._firmware + " serial no.:" + self._serial_no)
 # ERROR CODES:
 # [0,0] = device is already initialized.
@@ -494,14 +500,14 @@ def sendInfo():
 
 # function that print ok message.
 def printOKload(msg):
-    print bcolors.ENDC + "[  " + bcolors.OKGREEN + bcolors.BOLD + "OK" + bcolors.ENDC + "  ]  " + msg
+    print bcolors.ENDC + "[  " + bcolors.OKGREEN + bcolors.BOLD + "OK" + bcolors.ENDC + "  ]  " + msg + bcolors.ENDC
 
 # function to print fail message.
 def printFLload(msg):
-    print bcolors.ENDC + "[ " + bcolors.FAIL + bcolors.BOLD + "FAIL" + bcolors.ENDC + " ]  "+ bcolors.FAIL + bcolors.BOLD + msg
+    print bcolors.ENDC + "[ " + bcolors.FAIL + bcolors.BOLD + "FAIL" + bcolors.ENDC + " ]  "+ bcolors.FAIL + bcolors.BOLD + msg + bcolors.ENDC
 
 def printWorkload(msg):
-    print bcolors.WARNING + bcolors.BOLD + msg
+    print bcolors.WARNING + bcolors.BOLD + msg + bcolors.ENDC
 
 # THE GUI code.
 
