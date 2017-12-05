@@ -492,7 +492,7 @@ def initializeDevice():
 # function to adjuct baud rate.
 def setBaudrate(brate = 9600):
     printWorkload("Setting baud rate to device...")
-    if (localFPS.ChangeBaudrate(rate = brate) == [None, None]):
+    if (localFPS.ChangeBaudrate(baudrate = brate) == [None, None]):
         printOKload("Succesfully set baud rate of the device.")
         result = 1
     else:
