@@ -560,6 +560,6 @@ initializeDevice()
 # open device
 openDevice()
 # change baud rate
-ChangeBaudrate(brate = 115200)
+setBaudrate(brate = 115200)
 
 closeDevice()
