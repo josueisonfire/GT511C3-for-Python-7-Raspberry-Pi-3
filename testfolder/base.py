@@ -1,6 +1,6 @@
 
 import struct
-from .structure import *
+from structure import *
 
 
 """
@@ -48,9 +48,9 @@ def encode_command_packet(
         command = None,
         parameter = 0,
         device_id = 1):
-    
+
     command = commands[command]
-    packet = bytearray(struct.pack(comm_struct(), 
+    packet = bytearray(struct.pack(comm_struct(),
         packets['Command1'],    # Start code 1
         packets['Command2'],    # Start code 2
         device_id,              # Device ID
@@ -65,8 +65,8 @@ def encode_data_packet(
         data = None,
         data_len = 0,
         device_id = 1):
-    
-    packet = bytearray(struct.pack(data_struct(data_len), 
+
+    packet = bytearray(struct.pack(data_struct(data_len),
         packets['Data1'],    # Start code 1
         packets['Data2'],    # Start code 2
         device_id,           # Device ID
@@ -82,7 +82,7 @@ def decode_command_packet(packet):
         'DeviceID': None,
         'ACK': None,
         'Parameter': None,
-        'Checksum': None        
+        'Checksum': None
     }
     _debug = packet
     if packet == '': # Nothing to decode
@@ -113,7 +113,7 @@ def decode_data_packet(packet):
         'Header': None,
         'DeviceID': None,
         'Data': None,
-        'Checksum': None        
+        'Checksum': None
     }
     if packet == '':
         response['ACK'] = False
@@ -121,7 +121,7 @@ def decode_data_packet(packet):
     # Check if it is a command packet:
     if packet[0] == packets['Command1'] and packet[1] == packets['Command2']:
         return decode_command_packet(packet)
-    
+
     # Strip the checksum and get the values out
     checksum = sum(struct.unpack(checksum_struct(), packet[-2:])) # Last two bytes are checksum
     packet = packet[:-2]
@@ -129,7 +129,7 @@ def decode_data_packet(packet):
     chk = sum(packet)
     chk &= 0xffff
     response['Checksum'] = chk == checksum # True if checksum is correct
-    
+
     data_len = len(packet) - 4 # Exclude the header (2) and device ID (2)
 
     packet = struct.unpack(data_struct(data_len), packet)
@@ -138,7 +138,3 @@ def decode_data_packet(packet):
     response['Data'] = packet[3]
     # print packet
     return response
-
-
-
-
