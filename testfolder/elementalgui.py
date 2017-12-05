@@ -140,6 +140,7 @@ class Commands():
         if kwargs.get('led', None) is not None:
             self._led = kwargs['led']
             response = self._f.CmosLed(self._led)
+            result = [None, None]
             print "response from LED request: " + str(response)
         else:
             raise NackError(response[0]['Parameter'])
