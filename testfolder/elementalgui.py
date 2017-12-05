@@ -29,7 +29,7 @@ class Commands():
             __status = 'Open'
         else:
             __status = 'Closed'
-        printWorkload("FPS Status: Port:" + _status + " baudrate: " + _baudrate + " firmware: " + _firmware + " serial no.:" + _serial_no)
+        printWorkload("FPS Status: Port:" + self._status + " baudrate: " + self._baudrate + " firmware: " + self._firmware + " serial no.:" + self._serial_no)
 # ERROR CODES:
 # [0,0] = device is already initialized.
 # [0,1] = device's port is not reachable.
