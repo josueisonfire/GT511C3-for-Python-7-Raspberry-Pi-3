@@ -175,25 +175,26 @@ class Commands():
 # ERROR Code:
 # [0,0] = port has not been opened yet.
 # [0,2] = invalid parameters.
-
+# [0,3] = invalid slot parameter.
     def CheckEnrolled(self, ID):
         if not self.open:
             return [0,0]
-        if ID.isdigit():
-            if (ID < 200 and ID >= 0):
-                response = self._f.CheckEnrolled(int(ID))
-                # tester.
-                print "RESPONSE FROM ENROLLCHECK REQUEST:  " + str(response)
-                if response[0]['ACK']:
-                    #ID is in use.
-                    return [None, None]
-                # if the fp slot is populated:
-                elif response[0]['lel']:
-                    return [None, 0]
-                else:
-                    #ERROR
-                    return [0,2]
-                    #screen.addstr(3, 2, response[0]['Parameter'])
+        if (ID < 200 and ID >= 0):
+            response = self._f.CheckEnrolled(int(ID))
+            # tester.
+            print "RESPONSE FROM ENROLLCHECK REQUEST:  " + str(response)
+            if response[0]['ACK']:
+                #ID is in use.
+                return [None, None]
+            # if the fp slot is populated:
+            elif response[0]['lel']:
+                return [None, 0]
+            else:
+                #ERROR
+                return [0,2]
+                #screen.addstr(3, 2, response[0]['Parameter'])
+        else:
+            return [0,3]
 
     def IsPressFinger(self, *args, **kwargs):
         if not self.open:
@@ -310,7 +311,7 @@ class Commands():
             raise NackError(response[0]['Parameter'])
         return [None, None]
 
-    
+
 
 
     def Identify(self, *args, **kwargs):
