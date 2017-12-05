@@ -1,6 +1,6 @@
 # imports & other misc stuff.
 
-import structs
+import struct
 from time import sleep
 from threading import Timer
 from .exceptions import *
