@@ -31,6 +31,7 @@ class RepeatingTimer(object):
         self.timer.start()
 
 port = '/dev/ttyAMA0'
+
 MENU = "menu"
 COMMAND = "command"
 EXITMENU = "exitmenu"
@@ -172,13 +173,17 @@ class Commands():
         else:
             raise NackError(response[0]['Parameter'])
 
+# ERROR Codes:
+# [0,0]: port has not been pened.
+#
+
     def CmosLed(self, *args, **kwargs): # Need screen for popup window
         # Several modes of operation:
         # 1) If no argument is given - toggle LED
         # 2) If named boolean argument `led` is given - set the led to specified value
-        # 3) If positional argument is given - don't return the result, show the result on a separate curses.window
         if not self.open:
             raise NotOpenError('Please, open the port first!')
+            result = [0,0]
         if self._led is None:
             self._led = True
         else:
@@ -188,15 +193,7 @@ class Commands():
             self._led = kwargs['led']
         response = self._f.CmosLed(self._led)
         # response = [{'ACK': True}]
-        if response[0]['ACK']:
-            if len(args) > 0:
-                # Screen is given, show a message
-                args[0].addstr(2, 2, 'LED is set to ' + (' ON' if self._led else 'OFF'))
-                args[0].refresh()
-                return ['', None]
-            else:
-                # Screen is not given, return the message
-                return ['LED is set to ' + ('ON' if self._led else 'OFF'), None]
+
         else:
             raise NackError(response[0]['Parameter'])
 

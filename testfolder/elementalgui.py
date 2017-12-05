@@ -1,34 +1,13 @@
 # imports & other misc stuff.
 
 import struct
-from time import sleep
+import time
 from threading import Timer
 from exceptions import *
 import fingerpi as fp
 
 # Global variables:
 port = '/dev/ttyAMA0'
-
-# repeating timer.
-class RepeatingTimer(object):
-    def __init__(self, interval, f, *args, **kwargs):
-        self.interval = interval
-        self._f = f
-        self.args = args
-        self.kwargs = kwargs
-
-        self.timer = None
-
-    def callback(self):
-        self._f(*self.args, **self.kwargs)
-        self.start()
-
-    def cancel(self):
-        self.timer.cancel()
-
-    def start(self):
-        self.timer = Timer(self.interval, self.callback)
-        self.timer.start()
 
 # commands class:
 class Commands():
@@ -44,17 +23,13 @@ class Commands():
         self._firmware = 'N/A'
         self._serial_no = 'N/A'
 
+# print status.
     def _update_status(self):
         if self.open:
             __status = 'Open'
         else:
             __status = 'Closed'
-        self.status = self._status_template % (
-            __status,
-            str(self._baudrate),
-            str(self._firmware),
-            str(self._serial_no)
-        )
+        printWorkload("FPS Status: Port:" + _status + " baudrate: " + _baudrate + " firmware: " + _firmware + " serial no.:" + _serial_no)
 # ERROR CODES:
 # [0,0] = device is already initialized.
 # [0,1] = device's port is not reachable.
@@ -110,26 +85,6 @@ class Commands():
             result = [0,2]
         return result
 
-    def Blink(self, *args, **kwargs):
-        if not self.open:
-            raise NotOpenError('Please, open the port first!')
-        screen = args[0]
-        y, x = screen.getmaxyx()
-        screen.border(0)
-        screen.addstr(0, 1, 'Press any button to stop...'[:x-2], curses.A_STANDOUT)
-
-        t = RepeatingTimer(0.5, self.CmosLed, screen)
-        t.start()
-
-        screen.refresh()
-        inp = screen.getch()
-        if inp:
-            t.cancel()
-            self.CmosLed(led = False)
-            self._led = False
-
-        return ['', None]
-
     ####################################################################
     ## All (other) commands:
 
@@ -159,34 +114,31 @@ class Commands():
             return ['USB Internal Check returned: ' + str(response[0]['Parameter']), None]
         else:
             raise NackError(response[0]['Parameter'])
+# ERROR Codes:
+# [0,0] = port has not been opened.
+# [0,2] = invalid parameters.
 
     def CmosLed(self, *args, **kwargs): # Need screen for popup window
         # Several modes of operation:
         # 1) If no argument is given - toggle LED
         # 2) If named boolean argument `led` is given - set the led to specified value
-        # 3) If positional argument is given - don't return the result, show the result on a separate curses.window
         if not self.open:
+            result = [0.0]
             raise NotOpenError('Please, open the port first!')
+        # toggle function. if called for the first time, set to true.
         if self._led is None:
             self._led = True
         else:
-            self._led = not self._led
-
+            self._led = not self._led #toggles LED if no arg is given.
+        # end of toggle function.
         if kwargs.get('led', None) is not None:
             self._led = kwargs['led']
-        response = self._f.CmosLed(self._led)
-        # response = [{'ACK': True}]
-        if response[0]['ACK']:
-            if len(args) > 0:
-                # Screen is given, show a message
-                args[0].addstr(2, 2, 'LED is set to ' + (' ON' if self._led else 'OFF'))
-                args[0].refresh()
-                return ['', None]
-            else:
-                # Screen is not given, return the message
-                return ['LED is set to ' + ('ON' if self._led else 'OFF'), None]
+            response = self._f.CmosLed(self._led)
+            print "response from LED request: " + response
         else:
             raise NackError(response[0]['Parameter'])
+            result = [0,2]
+        return result
 
     def ChangeBaudrate(self, *args, **kwargs):
         if not self.open:
@@ -523,7 +475,9 @@ def closeDevice():
     return result
 # function to toggle LED value. Default call turns off the LED in the scanner.
 def setLED(sval = False):
-    result = 1
+    print "Setting LED value to " + sval
+    result localFPS.CmosLed(led = sval)
+    print "SET LED Function ret Value: " + result
     return result
 
 # function to start the enrollment sequence.
@@ -557,9 +511,21 @@ print bcolors.WARNING + bcolors.BOLD + "CLOUD-BAS: version [alpha] 0.17. SUNY KO
 # initialize device
 result = 0
 initializeDevice()
+time.sleep(0.1)
+localFPS._update_status()
 # open device
 openDevice()
+time.sleep(1)
+localFPS._update_status()
 # change baud rate
 setBaudrate(brate = 115200)
+time.sleep(0.3498)
+localFPS._update_status()
+
+setLED(led = True)
+time.sleep(1)
+setLED()
+time.sleep(1)
 
 closeDevice()
+localFPS._update_status()
