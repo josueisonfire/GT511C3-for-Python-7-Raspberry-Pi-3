@@ -26,9 +26,9 @@ class Commands():
 # print status.
     def _update_status(self):
         if self.open:
-            self.status = 'Open'
+            __status = 'Open'
         else:
-            self.status = 'Closed'
+            __status = 'Closed'
         self.status = self._status_template % (
             __status,
             str(self._baudrate),
@@ -507,7 +507,7 @@ def printFLload(msg):
     print bcolors.ENDC + "[ " + bcolors.FAIL + bcolors.BOLD + "FAIL" + bcolors.ENDC + " ]  "+ bcolors.FAIL + bcolors.BOLD + msg + bcolors.ENDC
 
 def printWorkload(msg):
-    print bcolors.WARNING + bcolors.BOLD + msg + bcolors.ENDC
+    print bcolors.WARNING + msg + bcolors.ENDC
 
 # THE GUI code.
 
