@@ -311,9 +311,6 @@ class Commands():
             raise NackError(response[0]['Parameter'])
         return [None, None]
 
-
-
-
     def Identify(self, *args, **kwargs):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
@@ -449,7 +446,7 @@ def checkSlot():
             "No empty index found"
             return -1
             break
-        if (localFPS.CheckEnrolled(ID = n) == [None, None]):
+        if (localFPS.CheckEnrolled(ID = n) == [None, 0]):
         # not occupied
             printOKload("Found empty index at slot " + str(n))
             return n
@@ -514,7 +511,11 @@ setLED(sval = True)
 time.sleep(0.2)
 setLED()
 
-enrollSeq()
+# enrollSeq()
+
+localFPS.CheckEnrolled(ID = 1)
+
+localFPS.CheckEnrolled(ID = 100)
 
 closeDevice()
 localFPS._update_status()
