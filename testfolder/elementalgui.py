@@ -180,7 +180,7 @@ class Commands():
         if not self.open:
             return [0,0]
         if ID.isdigit():
-            if (ID < 200 and ID => 0):
+            if (ID < 200 and ID >= 0):
                 response = self._f.CheckEnrolled(int(ID))
                 # tester.
                 print "RESPONSE FROM ENROLLCHECK REQUEST:  " + str(response)
