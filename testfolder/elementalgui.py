@@ -141,7 +141,7 @@ class Commands():
             self._led = kwargs['led']
             response = self._f.CmosLed(self._led)
             result = [None, None]
-            print "response from LED request: " + str(response)
+            # print "response from LED request: " + str(response)
         else:
             raise NackError(response[0]['Parameter'])
             result = [0,2]
@@ -172,36 +172,28 @@ class Commands():
             return ['Number of enrolled fingerprints: ' + str(response[0]['Parameter']), None]
         else:
             raise NackError(response[0]['Parameter'])
+# ERROR Code:
+# [0,0] = port has not been opened yet.
+# [0,2] = invalid parameters.
 
-    def CheckEnrolled(self, *args, **kwargs):
+    def CheckEnrolled(self, ID):
         if not self.open:
-            raise NotOpenError('Please, open the port first!')
-        screen = args[0]
-        y, x = screen.getmaxyx()
-        # screen.border(0)
-        # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
-        curses.echo()
-        while True:
-            screen.addstr(2, 2, '>>> ')
-            screen.clrtoeol()
-            screen.border(0)
-            screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
-            ID = screen.getstr(2, 6)
-            if ID.isdigit():
+            return [0,0]
+        if ID.isdigit():
+            if (ID < 200 and ID => 0):
                 response = self._f.CheckEnrolled(int(ID))
+                # tester.
+                print "RESPONSE FROM ENROLLCHECK REQUEST:  " + str(response)
                 if response[0]['ACK']:
-                    screen.addstr(3, 2, 'ID in use!')
-                    screen.clrtoeol()
+                    #ID is in use.
+                    return [None, None]
+                # if the fp slot is populated:
+                elif response[0]['lel']:
+                    return [None, 0]
                 else:
-                    screen.addstr(3, 2, response[0]['Parameter'])
-                    screen.clrtoeol()
-            elif ID.isalnum():
-                curses.noecho()
-                raise ValueError('Non-numeric value found!')
-            else:
-                break
-        curses.noecho()
-        return [None, None]
+                    #ERROR
+                    return [0,2]
+                    #screen.addstr(3, 2, response[0]['Parameter'])
 
     def IsPressFinger(self, *args, **kwargs):
         if not self.open:
@@ -219,18 +211,9 @@ class Commands():
     def EnrollStart(self, *args, **kwargs):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
-        screen = args[0]
-        y, x = screen.getmaxyx()
-        # screen.border(0)
-        # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
-        curses.echo()
         ret = [False, None]
         while True:
-            screen.addstr(2, 2, '>>> ')
-            screen.clrtoeol()
-            screen.border(0)
-            screen.addstr(0, 1, 'Enter a new ID for enrollment, or empty field to cancel...'[:x-2], curses.A_STANDOUT)
-            ID = screen.getstr(2, 6)
+            ID = 0  # <INPUT digit param here.>
             if ID.isdigit():
                 response = self._f.EnrollStart(int(ID))
                 if response[0]['ACK']:
@@ -246,7 +229,6 @@ class Commands():
                 raise ValueError('Non-numeric value found!')
             else:
                 break
-        curses.noecho()
         return ret
 
     def Enroll1(self, *args, **kwargs):
@@ -264,7 +246,7 @@ class Commands():
     def Enroll2(self, *args, **kwargs):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
-        response = self._f.Enroll1()
+        response = self._f.Enroll2()
         if not response[0]['ACK']:
             if response[0]['ACK'] in errors:
                 err = response[0]['ACK']
@@ -276,7 +258,7 @@ class Commands():
     def Enroll3(self, *args, **kwargs):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
-        response = self._f.Enroll1()
+        response = self._f.Enroll3()
         if not response[0]['ACK']:
             if response[0]['ACK'] in errors:
                 err = response[0]['ACK']
@@ -328,38 +310,19 @@ class Commands():
             raise NackError(response[0]['Parameter'])
         return [None, None]
 
-    def Verify(self, *args, **kwargs):
+    def Verify(self, ID):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
-        screen = args[0]
-        y, x = screen.getmaxyx()
-        # screen.border(0)
-        # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
-        curses.echo()
-        ret = [False, None]
-        while True:
-            screen.addstr(2, 2, '>>> ')
-            screen.clrtoeol()
-            screen.border(0)
-            screen.addstr(0, 1, 'Enter an ID to verify, or empty field to cancel...'[:x-2], curses.A_STANDOUT)
-            ID = screen.getstr(2, 6)
-            if ID.isdigit():
-                response = self._f.Verify(int(ID))
-                if response[0]['ACK']:
-                    # screen.addstr(3, 2, 'ID in use!')
-                    # screen.clrtoeol()
-                    ret[0] = 'ID {0:d} verified'.format(ID)
-                    break
-                else:
-                    screen.addstr(3, 2, response[0]['Parameter'])
-                    screen.clrtoeol()
-            elif ID.isalnum():
-                curses.noecho()
-                raise ValueError('Non-numeric value found!')
+            return [0,0]
+        if ID.isdigit():
+            response = self._f.Verify(int(ID))
+            if response[0]['ACK']:
+                return [None, None]
             else:
-                break
-        curses.noecho()
-        return ret
+                return False
+        else ID.isalnum():
+            return None
+
 
     def Identify(self, *args, **kwargs):
         if not self.open:
@@ -484,11 +447,41 @@ def closeDevice():
 def setLED(sval = False):
     print "Setting LED value to " + str(sval)
     result = localFPS.CmosLed(led = sval)
-    print "SET LED Function ret Value: " + str(result)
+    # print "SET LED Function ret Value: " + str(result)
     return result
+
+# helper funcition to find an unoccupied slot in the scanner.
+def checkSlot():
+    printWorkload("Checking for open ID fields in scanner")
+    n = 0
+    while True:
+        if n == 199:
+            "No empty index found"
+            return -1
+            break
+        if (localFPS.CheckEnrolled(ID = n) == [None, None]):
+        # not occupied
+            printOKload("Found empty index at slot " + str(n))
+            return n
+            break
+        else:
+            n = n + 1
+            printWorkload("index " + n + " is occupied.")
+    return None
 
 # function to start the enrollment sequence.
 def enrollSeq(): #parameters are still undef.
+
+    # check ID slots until they are unoccupied. If all are occupied, send FULL error. and delete the first in the list.
+    slot = checkSlot()
+    # start enrollment @ specified ID.
+
+    # do first enrollment. figure out how to 1) send the enroll img if finger is pressed. Loop until a good fp is recorded.
+
+    # do second enrollment.
+
+    # do third enrollment.
+
     return True
 
 # function to connect the module to the remote database.
@@ -533,6 +526,8 @@ setLED(sval = True)
 time.sleep(1)
 setLED()
 time.sleep(1)
+
+enrollSeq()
 
 closeDevice()
 localFPS._update_status()
