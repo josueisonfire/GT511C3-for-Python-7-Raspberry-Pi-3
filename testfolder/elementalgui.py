@@ -310,18 +310,7 @@ class Commands():
             raise NackError(response[0]['Parameter'])
         return [None, None]
 
-    def Verify(self, ID):
-        if not self.open:
-            raise NotOpenError('Please, open the port first!')
-            return [0,0]
-        if ID.isdigit():
-            response = self._f.Verify(int(ID))
-            if response[0]['ACK']:
-                return [None, None]
-            else:
-                return False
-        else ID.isalnum():
-            return None
+    
 
 
     def Identify(self, *args, **kwargs):
