@@ -3,7 +3,7 @@
 import struct
 from time import sleep
 from threading import Timer
-from .exceptions import *
+from exceptions import *
 import fingerpi as fp
 
 # Global variables:
