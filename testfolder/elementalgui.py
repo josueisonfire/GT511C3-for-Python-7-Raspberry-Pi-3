@@ -11,37 +11,18 @@ import fingerpi as fp
 import RPi.GPIO as GPIO
 
 
-# slightly light up LED.
-def dim(pt = 0.001):
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(7, GPIO.OUT)
-    led = GPIO.PWM(7, 100)
-    led.start(0)
-    pause_time = pt
-    for i in range(0, 100+1):
-        led.ChangeDutyCycle(i)
-        time.sleep(pause_time)
-    for i in range(100, -1, -1):
-        led.ChangeDutyCycle(i)
-        time.sleep(pause_time)
-    GPIO.cleanup()
-
 def turnLEDON():
-    GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
-    led = GPIO.PWM(7, 100)
-    led.start(0)
     GPIO.output(7, True)
 
 def turnLEDOFF():
-    GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
-    led = GPIO.PWM(7, 100)
-    led.start(0)
     GPIO.output(7, False)
+        
+def cleanup():
+    GPIO.cleanup()
 
 
 # Global variables:
@@ -486,14 +467,14 @@ localFPS = Commands()
 
 # code to init device. check availability of the port, and determines whether the fingerprint reader is connected or not.
 def initializeDevice():
-    dim()
+    turnLEDON()
     if (localFPS.Initialize() == [None, None]):
         printOKload("Succesfully initialized device.")
         result = 1
     else:
         printFLload("ERROR: Failed to initialize device. Check the connection, device power status, or connections.")
         result = 0
-    dim()
+    turnLEDOFF()
     return result
 
 # function to adjuct baud rate.
