@@ -506,6 +506,21 @@ def checkSlot():
         n = n + 1
     return None
 
+# function to make user reapply fingerprint to the scanner, without continuously looping.
+# once a fingerprint has been taken out, it will light up the light after 0.2 secs and available to take the next fp.
+def reCatch():
+    setLED(sval = False)
+    while True:
+        if localFPS.IsPressFinger() == [None, None]:
+            # TODO : implement light led to do something, like a red light.
+            ledagain = 1 # gibberish
+        # do nothing. we want them to take the fingerprint off.
+        elif localFPS.IsPressFinger() == [1,0]:
+            time.sleep(0.2)
+            setLED(sval = True)
+            break
+
+
 # function to start the enrollment sequence.
 def enrollSeq(): #parameters are still undef.
 # return values:
@@ -542,13 +557,16 @@ def enrollSeq(): #parameters are still undef.
             if (res == [None, None]):
                 # no problems found. continue.
                 printOKload("First Enrollment Successfull!")
+                reCatch()
                 break
             elif (res == [4108,0]):
                 printFLload("Faulty Fingerprint. Please try again!")
+                reCatch()
             elif (res == [4109,0]):
                 if threshhold > 0:
                     printFLload("ERR: Fingerprint has already been registered. To be sure, try again.")
                     threshhold = threshhold - 1
+                    reCatch()
                 else:
                     printFLload("ERR: fingerprint has already been registered. Aborting...")
                     return -1
@@ -567,13 +585,16 @@ def enrollSeq(): #parameters are still undef.
             if (res == [None, None]):
                 # no problems found. continue.
                 printOKload("Second Enrollment Successfull!")
+                reCatch()
                 break
             elif (res == [4108,0]):
                 printFLload("Faulty Fingerprint. Please try again!")
+                reCatch()
             elif (res == [4109,0]):
                 if threshhold > 0:
                     printFLload("ERR: Fingerprint has already been registered. To be sure, try again.")
                     threshhold = threshhold - 1
+                    reCatch()
                 else:
                     printFLload("ERR: fingerprint has already been registered. Aborting...")
                     return -1
@@ -593,13 +614,16 @@ def enrollSeq(): #parameters are still undef.
             if (res == [None, None]):
                 # no problems found. continue.
                 printOKload("Third Enrollment Successfull!")
+                reCatch()
                 break
             elif (res == [4108,0]):
                 printFLload("Faulty Fingerprint. Please try again!")
+                reCatch()
             elif (res == [4109,0]):
                 if threshhold > 0:
                     printFLload("ERR: Fingerprint has already been registered. To be sure, try again.")
                     threshhold = threshhold - 1
+                    reCatch()
                 else:
                     printFLload("ERR: fingerprint has already been registered. Aborting...")
                     return -1
