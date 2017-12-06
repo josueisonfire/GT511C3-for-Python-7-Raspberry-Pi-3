@@ -555,10 +555,7 @@ def enrollSeq(): #parameters are still undef.
             else:
                 printFLload("ERR: Unparsed Error. Aborting...")
                 return -2
-        else:
-            # Do nothing
-            # normal execution.
-    # second enrollment
+       
     threshhold = 3
     while True:
         # [None, None] = no issues.
@@ -583,9 +580,7 @@ def enrollSeq(): #parameters are still undef.
             else:
                 printFLload("ERR: Unparsed Error. Aborting...")
                 return -2
-        else:
-            # Do nothing
-            # normal execution.
+       
     # third enrollment
     threshhold = 3
     while True:
@@ -611,9 +606,7 @@ def enrollSeq(): #parameters are still undef.
             else:
                 printFLload("ERR: Unparsed Error. Aborting...")
                 return -2
-        else:
-            # Do nothing
-            # normal execution.
+      
 
     # turn off LED
     setLED(sval = False)
