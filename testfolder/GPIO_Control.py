@@ -56,3 +56,5 @@ turnLEDON()
 time.sleep(3)
 
 turnLEDOFF()
+
+cleanup()
