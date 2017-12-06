@@ -39,9 +39,6 @@ class Commands():
 # ERROR CODES:
 # [0,0] = device is already initialized.
 # [0,1] = device's port is not reachable.
-
-
-
     def Initialize(self, *args, **kwargs):
         if self._f is not None:
             raise AlreadyInitializedError('This device is already initialized')
@@ -57,12 +54,10 @@ class Commands():
         # self._status = 'Initialized' # Change that to `closed`
         self._update_status()
         return result
-
 # ERROR Codes:
 # [0,0] = device already open.
 # [0,1] = device uninitialized.
 # [0,2] = device open request provided invalid parameters.
-
     def Open(self, *args, **kwargs):
         if self.open:
             result = [0,0]
@@ -90,10 +85,8 @@ class Commands():
             raise NackError(response[0]['Parameter'])
             result = [0,2]
         return result
-
     ####################################################################
     ## All (other) commands:
-
     # ERROR Codes:
     # [0,0] = port is not open. cannot close.
     # [0,2] = device close request provided invalid parameters.
@@ -203,78 +196,126 @@ class Commands():
             return [0,3]
 
     def IsPressFinger(self, *args, **kwargs):
+    # ret values:
+    # [None, None] = finger is pressed.
+    # [0,0] = port has not yet opened.
+    # [0,2] = invalid params
         if not self.open:
             raise NotOpenError('Please, open the port first!')
         response = self._f.IsPressFinger()
         if response[0]['ACK']:
             if response[0]['Parameter'] == 0:
                 # Finger is pressed
-                return [True, None]
+                return [None, None]
             else:
-                return [False, None]
+                return [1, 0]
         else:
             raise NackError(response[0]['Parameter'])
 
-    def EnrollStart(self, *args, **kwargs):
+    def EnrollStart(self, ID):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
-        ret = [False, None]
+            return [0,0]
+        # ret = [False, None]
         while True:
-            ID = 0  # <INPUT digit param here.>
-            if ID.isdigit():
-                response = self._f.EnrollStart(int(ID))
-                if response[0]['ACK']:
-                    # screen.addstr(3, 2, 'ID in use!')
-                    # screen.clrtoeol()
-                    ret[0] = 'Enrollment of ID {0:d} started'.format(response[0]['Parameter'])
-                    break
-                else:
-                    screen.addstr(3, 2, response[0]['Parameter'])
-                    screen.clrtoeol()
-            elif ID.isalnum():
-                curses.noecho()
-                raise ValueError('Non-numeric value found!')
-            else:
+            # <INPUT digit param here.>
+            response = self._f.EnrollStart(int(ID))
+            if response[0]['ACK']:
+                return [None, None]
                 break
+            elif response[0]['ACK'] == False:
+                if response[0]['Parameter'] = 4105:
+                    printFLload("Enrollment Init Failed. DB is fUll.")
+                    return [4105, 0]
+                elif response[0]['Parameter'] = 4099:
+                    printFLload("Enrollment Init failed. Invalid position given.")
+                    return [4099, 0]
+                elif response[0]['Parameter'] = 4101:
+                    printFLload("Enrollment Init failed. Specified ID is already in use.")
+                    return [4101, 0]
+            break
         return ret
 
-    def Enroll1(self, *args, **kwargs):
+    def Enroll1(self, ID, *args, **kwargs):
+        # ERROR CODES: 
+        # [0,0] = port not open
+        # [0,2] = invalid params.
+        # [4109,0] = Fingerprint has already been registered.
+        # [4108,0] = Faulty Fingerprint.
         if not self.open:
             raise NotOpenError('Please, open the port first!')
+            return [0,0]
         response = self._f.Enroll1()
-        if not response[0]['ACK']:
-            if response[0]['ACK'] in errors:
-                err = response[0]['ACK']
+        if response[0]['ACK'] == True:
+            # no issues.
+            return [None, None]
+        elif response[0]['ACK'] == False:
+            # if ack param was false, that is, there was an error:
+            if response[0]['Parameters'] == 4109:
+                # enroll failed.
+                # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
+                return [4109, 0]
+            elif response[0]['Parameters'] = 4108:
+                # bad finger.
+                # printFLload("ERR: Bad fingerprint. Please try again.")
+                return [4108, 0]
             else:
-                err = 'Duplicate ID: ' + str(response[0]['ACK'])
-            raise NackError(err)
-        return [None, None]
+                # unexpected error.
+                return [0,2]
 
     def Enroll2(self, *args, **kwargs):
+        # ERROR CODES: 
+        # [0,0] = port not open
+        # [0,2] = invalid params.
+        # [4109,0] = Fingerprint has already been registered.
+        # [4108,0] = Faulty Fingerprint.
         if not self.open:
             raise NotOpenError('Please, open the port first!')
+            return [0,0]
         response = self._f.Enroll2()
-        if not response[0]['ACK']:
-            if response[0]['ACK'] in errors:
-                err = response[0]['ACK']
+        if response[0]['ACK'] == True:
+            # no issues.
+            return [None, None]
+        elif response[0]['ACK'] == False:
+            # if ack param was false, that is, there was an error:
+            if response[0]['Parameters'] == 4109:
+                # enroll failed.
+                # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
+                return [4109, 0]
+            elif response[0]['Parameters'] = 4108:
+                # bad finger.
+                # printFLload("ERR: Bad fingerprint. Please try again.")
+                return [4108, 0]
             else:
-                err = 'Duplicate ID: ' + str(response[0]['ACK'])
-            raise NackError(err)
-        return [None, None]
+                # unexpected error.
+                return [0,2]
 
     def Enroll3(self, *args, **kwargs):
+        # ERROR CODES: 
+        # [0,0] = port not open
+        # [0,2] = invalid params.
+        # [4109,0] = Fingerprint has already been registered.
+        # [4108,0] = Faulty Fingerprint.
         if not self.open:
             raise NotOpenError('Please, open the port first!')
+            return [0,0]
         response = self._f.Enroll3()
-        if not response[0]['ACK']:
-            if response[0]['ACK'] in errors:
-                err = response[0]['ACK']
+        if response[0]['ACK'] == True:
+            # no issues.
+            return [None, None]
+        elif response[0]['ACK'] == False:
+            # if ack param was false, that is, there was an error:
+            if response[0]['Parameters'] == 4109:
+                # enroll failed.
+                # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
+                return [4109, 0]
+            elif response[0]['Parameters'] = 4108:
+                # bad finger.
+                # printFLload("ERR: Bad fingerprint. Please try again.")
+                return [4108, 0]
             else:
-                err = 'Duplicate ID: ' + str(response[0]['ACK'])
-            raise NackError(err)
-        if self._f.save:
-            return [str(len(response[1]['Data'])) + ' bytes received... And purged!', None]
-        return [None, None]
+                # unexpected error.
+                return [0,2]
 
     def DeleteID(self, *args, **kwargs):
         if not self.open:
@@ -467,16 +508,115 @@ def checkSlot():
 
 # function to start the enrollment sequence.
 def enrollSeq(): #parameters are still undef.
+# return values:
+# -1 error
+# -2 unexpected error
+# 0 normal execution.
+    # Turn on LED light:
+    setLED(sval = True)
 
     # check ID slots until they are unoccupied. If all are occupied, send FULL error. and delete the first in the list.
     slot = checkSlot()
     # start enrollment @ specified ID.
+    while True:
+        if (localFPS.EnrollStart(ID = slot) == [None, None]):
+            # ack
+            # do stuff.
+            break
+        elif (localFPS.EnrollStart(ID = slot) == [4105, 0]):
+            # erase (delete) 1st item in the scanner, and store it there.
+            # TODO : implement automated deletion.
+            break
+        else: 
+            return -1 #error!
+    # if perm = [None, None], we're good to go.
+    # do first enrollment. figure out how to 1) send the enroll 
+    threshhold = 3
+    while True:
+        # [None, None] = no issues.
+        # [4109,0] = Fingerprint has already been registered.
+        # [4108,0] = Faulty Fingerprint.
+        if (localFPS.IsPressFinger() == [None, None]):
+            # 
+            res = localFPS.Enroll1()
+            if (res == [None, None]):
+                # no problems found. continue.
+                printOKload("First Enrollment Successfull!")
+                break
+            elif (res == [4108,0]):
+                printFLload("Faulty Fingerprint. Please try again!")
+            elif (res == [4109,0]):
+                if threshhold > 0:
+                    printFLload("ERR: Fingerprint has already been registered. To be sure, try again.")
+                    threshhold = threshhold - 1
+                else:
+                    printFLload("ERR: fingerprint has already been registered. Aborting...")
+                    return -1
+            else:
+                printFLload("ERR: Unparsed Error. Aborting...")
+                return -2
+        else:
+            # Do nothing
+            # normal execution.
+    # second enrollment
+    threshhold = 3
+    while True:
+        # [None, None] = no issues.
+        # [4109,0] = Fingerprint has already been registered.
+        # [4108,0] = Faulty Fingerprint.
+        if (localFPS.IsPressFinger() == [None, None]):
+            # 
+            res = localFPS.Enroll2()
+            if (res == [None, None]):
+                # no problems found. continue.
+                printOKload("Second Enrollment Successfull!")
+                break
+            elif (res == [4108,0]):
+                printFLload("Faulty Fingerprint. Please try again!")
+            elif (res == [4109,0]):
+                if threshhold > 0:
+                    printFLload("ERR: Fingerprint has already been registered. To be sure, try again.")
+                    threshhold = threshhold - 1
+                else:
+                    printFLload("ERR: fingerprint has already been registered. Aborting...")
+                    return -1
+            else:
+                printFLload("ERR: Unparsed Error. Aborting...")
+                return -2
+        else:
+            # Do nothing
+            # normal execution.
+    # third enrollment
+    threshhold = 3
+    while True:
+        # [None, None] = no issues.
+        # [4109,0] = Fingerprint has already been registered.
+        # [4108,0] = Faulty Fingerprint.
+        if (localFPS.IsPressFinger() == [None, None]):
+            # 
+            res = localFPS.Enroll3()
+            if (res == [None, None]):
+                # no problems found. continue.
+                printOKload("Third Enrollment Successfull!")
+                break
+            elif (res == [4108,0]):
+                printFLload("Faulty Fingerprint. Please try again!")
+            elif (res == [4109,0]):
+                if threshhold > 0:
+                    printFLload("ERR: Fingerprint has already been registered. To be sure, try again.")
+                    threshhold = threshhold - 1
+                else:
+                    printFLload("ERR: fingerprint has already been registered. Aborting...")
+                    return -1
+            else:
+                printFLload("ERR: Unparsed Error. Aborting...")
+                return -2
+        else:
+            # Do nothing
+            # normal execution.
 
-    # do first enrollment. figure out how to 1) send the enroll img if finger is pressed. Loop until a good fp is recorded.
-
-    # do second enrollment.
-
-    # do third enrollment.
+    # turn off LED
+    setLED(sval = False)
 
     return True
 
