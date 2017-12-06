@@ -353,10 +353,13 @@ class Commands():
     def DeleteAll(self, *args, **kwargs):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
+            return [0,0]
         response = self._f.DeleteAll()
         if not response[0]['ACK']:
-            raise NackError(response[0]['Parameter'])
-        return [None, None]
+            printFLload("ERR: Deletion failed. Error code: " + str(response[0]['Parameter']))
+        else:
+            return [None, None]
+        
 
     def Identify(self, *args, **kwargs):
         if not self.open:
@@ -517,9 +520,6 @@ def reCatch():
             # TODO : implement light led to do something, like a red light.
             ledagain = 1 # gibberish
             break
-            
-            
-
 
 # function to start the enrollment sequence.
 def enrollSeq(): #parameters are still undef.
@@ -676,6 +676,12 @@ localFPS._update_status()
 setLED(sval = True)
 time.sleep(0.2)
 setLED()
+
+ret = localFPS.DeleteAll()
+if ret == [None, None]:
+    printOKload("Deleted all Fingerprint templates:")
+else:
+    printFLload("Failed to delete all fp templates")
 
 enrollSeq()
 
