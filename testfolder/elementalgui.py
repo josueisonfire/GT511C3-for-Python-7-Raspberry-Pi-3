@@ -315,6 +315,7 @@ class Commands():
                 return [4108, 0]
             else:
                 # unexpected error.
+                print "UNEX ERR:  " + str(response[0]['Parameter'])
                 return [0,2]
 
     def DeleteID(self, *args, **kwargs):
@@ -616,7 +617,7 @@ def enrollSeq(): #parameters are still undef.
                         printFLload("ERR: fingerprint has already been registered. Aborting...")
                         return -1
                 else:
-                    printFLload("ERR: Unparsed Error. ERROR CODE: " + str(res) + "Aborting...")
+                    printFLload("ERR: Unparsed Error. ERROR CODE: " + str(res) + " Aborting...")
                     return -2
     # turn off LED
     setLED(sval = False)
