@@ -109,11 +109,17 @@ def decode_command_packet(packet):
     print "BASE.PY, ACk VAL: " + str(response['ACK'])
     print "BASE.PY, HEADER VAL: " + str(response['Header'])
 
-    response['Parameter'] = errors(packet[3])
+    if (response['ACK'] == False)
+        response['Parameter'] = "ERROR"
+    else:
+        response['Parameter'] = packet[3]
+
+    #response['Parameter'] = errors(packet[3]) if (not response['ACK'] and packet[3] in errors) else packet[3]
 
     print "response Param: " + str(errors(packet[3]))
+    print "packet [3] info: " + str(packet[3])
 
-    if (not response['ACK'] and packet[3] in errors) else packet[3]
+
 
     return response
 
