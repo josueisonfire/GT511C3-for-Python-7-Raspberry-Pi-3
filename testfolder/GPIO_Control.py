@@ -26,16 +26,12 @@ def dim(pt = 0.001):
 def turnLEDON():
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
-    led = GPIO.PWM(7, 100)
-    led.start(0)
-    led.ChangeDutyCycle(100)
+    GPIO.output(7, True)
 
 def turnLEDOFF(pt = 0.001):
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
-    led = GPIO.PWM(7, 0)
-    led.start(0)
-    led.ChangeDutyCycle(0)
+    GPIO.output(7, False)
         
 def cleanup():
     GPIO.cleanup()
