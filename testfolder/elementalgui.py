@@ -406,44 +406,6 @@ class Commands():
             return [None, None]
         
 
-        if not self.open:
-            raise NotOpenError('Please, open the port first!')
-        response = self._f.GetImage()
-        if not response[0]['ACK']:
-            raise NackError(response[0]['Parameter'])
-
-        screen = args[0]
-        y, x = screen.getmaxyx()
-        # screen.border(0)
-        # screen.addstr(0, 1, 'Enter the ID to check, or empty field to exit...'[:x-2], curses.A_STANDOUT)
-        curses.echo()
-        ret = [False, None]
-        while True:
-            screen.addstr(2, 2, '>>> ')
-            screen.clrtoeol()
-            screen.border(0)
-            screen.addstr(0, 1, 'Enter an the path to save the file to, or empty field to cancel...'[:x-2], curses.A_STANDOUT)
-            ID = screen.getstr(2, 6)
-            if len(ID) > 0:
-                data = response[1]['Data']
-                # Try saving the file
-                # try:
-                # fl = open(ID, 'w')
-                # fl.write(response[1]['Data'])
-                # fl.close()
-                # except IOError as e:
-                #     curses.noecho()
-                #     fl.close()
-                #    raise IOError('Could not write file! ' + str(e))
-                with open('ID', 'w') as f:
-                    pickle.dump(data, f)
-                break
-            else:
-                break
-        curses.noecho()
-        return ret
-
-
 # predefine ANSI Font color/style schematics.
 class bcolors:
     HEADER = '\033[95m'
