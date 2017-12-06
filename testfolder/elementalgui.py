@@ -1,5 +1,6 @@
 # imports & other misc stuff.
 import sys
+import requests
 import struct
 import time
 from threading import Timer
@@ -9,6 +10,26 @@ import fingerpi as fp
 # Global variables:
 port = '/dev/ttyAMA0'
 
+class network_data_buffer():
+    initialbuffer = {"-1" : "NonEmpty"}
+    def __init__(self):
+        self.buffer = {"-1" : "NonEmpty"}
+
+    def addData(self, ID=-1, sID=None):
+        if ID == -1 or sID == None:
+            printFLload("ERR: Invalid n_databuffer parameters.")
+        else:
+            self.buffer[str(ID)] = str(sID)
+    def getALLData(self):
+        ret = self.buffer.copy()
+        self.buffer = initialbuffer
+        return ret
+
+    def reset(self):
+        self.buffer = initialbuffer
+
+
+
 # commands class:
 class Commands():
     ## Every method has to return `status` array of size 2
@@ -16,7 +37,7 @@ class Commands():
         self._f = None
         self.status = 'Uninitialized...'
         self._led = None
-
+        self._n_buffer = None
         self.open = False
         self._status_template = r'%s; Baudrate: %s; Firmware ver.: %s; Serial #: %s'
         self._baudrate = 'N/A'
@@ -40,6 +61,7 @@ class Commands():
 # [0,0] = device is already initialized.
 # [0,1] = device's port is not reachable.
     def Initialize(self, *args, **kwargs):
+        self._n_buffer = network_data_buffer()
         if self._f is not None:
             raise AlreadyInitializedError('This device is already initialized')
             result = [0,0]
@@ -317,7 +339,7 @@ class Commands():
                 # unexpected error.
                 print "ERR:  Duplicate ID found at slot: " + str(response[0]['Parameter'])
                 return [0,2]
-
+    # NOT YET IMPLEMENTED!
     def DeleteID(self, *args, **kwargs):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
@@ -621,7 +643,30 @@ def enrollSeq(): #parameters are still undef.
                     return -2
     # turn off LED
     setLED(sval = False)
+    printOKload("Succesfully enrolled Fingerprint at slot: " + str(slot) + "!")
+    while True:
+        printWorkload("Please input your Student ID:")
+        sID = raw_input(">>  ")
+        printWorkload("Is \'" + sID + "\' your student ID? press 'c' to confirm, or any other key to try again.")
+        confirm = raw_input(">>  ")
+        if confirm == "c" or confirm == "C":
+            # map 'slot' with the SBUID.
+            snt = sendInfo(ID = slot, sID = sID, sType = "Register")
+            if snt == True:
+                # sent successfully.
+                break
+            else:
+                # save locally:
+                printWorkload("Unable to upload data. Saving data locally...")
+                localFPS._n_buffer.addData(ID = slot, sID = sID)
+        # try sending it to the network. If failed, save it locally.
+            
+            break
 
+        # else, repeat.
+
+    # do something with SID
+    
     return True
 
 # Function to identify fingerprint:
@@ -656,14 +701,19 @@ def indentifyFingerprint():
     reCatch()
     return res
 
-
-# function to connect the module to the remote database.
-def dbaseConnect():
-    return True
-
 # function to send any detected fingerprints scans to the database.
-def sendInfo():
+def sendInfo(ID,sID,sType):
+    data = {'method': sType, 'sid':str(sID), 'fid': str(ID)}
+    # server address
+    server = 'http://172.16.23.189:5000/bluesmoke'
+    postData(server,data)
     return True
+
+def postData(server ,data):
+	# make request
+	res = requests.post(server, json=data)
+	# check for server response code
+	print res.text
 
 # function that print ok message.
 def printOKload(msg):
@@ -709,7 +759,8 @@ while True:
         indentifyFingerprint()
     elif inp == "C" or inp == "c":
         # start change baud rate sequence.
-        cbrt = input("input the desired baud rate. 9600, 14400, 19200, 28800, 38400, 57600, 115200.")
+        printWorkload("input the desired baud rate. 9600, 14400, 19200, 28800, 38400, 57600, 115200.")
+        cbrt = raw_input(">> ")
         if cbrt.isdigit():
             if int(cbrt) == 9600 or int(cbrt) == 14400 or int(cbrt) == 19200 or int(cbrt) == 28800 or int(cbrt) == 38400 or int(cbrt) == 57600 or int(cbrt) == 115200:
                 setBaudrate(brate = cbrt)
@@ -730,4 +781,3 @@ while True:
         closeDevice()
         sys.exit()
         # start exit sequence.
-
