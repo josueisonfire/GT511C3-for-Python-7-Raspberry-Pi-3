@@ -182,20 +182,19 @@ class Commands():
         if (ID < 200 and ID >= 0):
             response = self._f.CheckEnrolled(int(ID))
             # tester.
-            print "RESPONSE FROM ENROLLCHECK REQUEST:  " + str(response)
+            # print "RESPONSE FROM ENROLLCHECK REQUEST:  " + str(response)
             if response[0]['ACK']:
                 #ID is in use.
                 return [None, None]
             # if the fp slot is populated:
             elif (response[0]['ACK'] == False):
-                print "response[0]['Parameter'] has value of: " + str(response[0]['Parameter'])
+                # print "response[0]['Parameter'] has value of: " + str(response[0]['Parameter'])
                 if (response[0]['Parameter'] == 4100):
                     #the specified field is not used.
-                    print "HURRAY!"
                     return [None, 0]
                 else:
                     printFLload("Invalid paramter in checkEnroll Method.")
-                    return [None, 0]
+                    return [0, 2]
             else:
                 #ERROR
                 return [0,2]
@@ -449,18 +448,21 @@ def checkSlot():
     printWorkload("Checking for open ID fields in scanner")
     n = 0
     while True:
+        ret = localFPS.CheckEnrolled(ID = n)
         if n == 199:
             "No empty index found"
             return -1
             break
-        if (localFPS.CheckEnrolled(ID = n) == [None, 0]):
+        if (ret == [None, 0]):
         # not occupied
             printOKload("Found empty index at slot " + str(n))
             return n
             break
-        else:
+        elif(ret == [None, None]):
             n = n + 1
             printWorkload("index " + n + " is occupied.")
+        else:
+            printFLload("ERROR Ocurred while finding slot in scanner. Error code: " + str(ret))
     return None
 
 # function to start the enrollment sequence.
