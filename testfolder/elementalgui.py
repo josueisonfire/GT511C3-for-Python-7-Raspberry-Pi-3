@@ -459,8 +459,8 @@ def checkSlot():
             return n
             break
         elif(ret == [None, None]):
-            n = n + 1
             printWorkload("index " + str(n) + " is occupied.")
+            n = n + 1
         else:
             printFLload("ERROR Ocurred while finding slot in scanner. Error code: " + str(ret))
     return None
