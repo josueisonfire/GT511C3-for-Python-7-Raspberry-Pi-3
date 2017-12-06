@@ -24,14 +24,28 @@ def dim(pt = 0.001):
     GPIO.cleanup()
 
 def turnLEDON():
+    GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
-    GPIO.output(7, True)
+    led = GPIO.PWM(7, 100)
+    led.start(0)
+    pause_time = pt
+    for i in range(0, 100+1):
+        led.ChangeDutyCycle(i)
+        time.sleep(pause_time)
+    GPIO.cleanup()
 
 def turnLEDOFF():
+    GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
-    GPIO.output(7, False)
+    led = GPIO.PWM(7, 100)
+    led.start(0)
+    pause_time = pt
+    for i in range(100, -1, -1):
+        led.ChangeDutyCycle(i)
+        time.sleep(pause_time)
+    GPIO.cleanup()
 
 dim()
 
