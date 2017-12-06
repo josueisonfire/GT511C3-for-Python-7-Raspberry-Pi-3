@@ -3,7 +3,7 @@ import sys
 import requests
 import struct
 import time
-import msvcrt
+import keyboard
 from threading import Timer
 from exceptions import *
 import fingerpi as fp
@@ -674,16 +674,21 @@ def enrollSeq(): #parameters are still undef.
 def indentifyFingerprint():
     #Turn on the LED:
     setLED(sval = True)
-    printWorkload("Now scanning for fingerprints:")
+    printWorkload("Now scanning for fingerprints: Press 'q' to stop.")
     res = None
 
     while True:
         # print 'Testing..'
         # body of the loop ...
-        if msvcrt.kbhit():
-            if ord(msvcrt.getch()) == 27:
-                break
-        print "looping... "
+        try: #used try so that if user pressed other than the given key error will not be shown
+            if keyboard.is_pressed('q'):#if key 'q' is pressed 
+                print('Exiting...')
+                break#finishing the loop
+            else:
+                pass
+        except:
+            # ignore all other inputs
+            pass
         # [None, None] = no issues.
         # [4109,0] = Fingerprint has already been registered.
         # [4108,0] = Faulty Fingerprint.
