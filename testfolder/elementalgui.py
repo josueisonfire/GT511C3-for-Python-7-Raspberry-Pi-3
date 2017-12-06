@@ -10,13 +10,21 @@ import fingerpi as fp
 
 import RPi.GPIO as GPIO
 
+def setprocLED(timeout=0.02, state=False):
+    if state == False:
+        turnLEDOFF(timeout=timeout)
+    else:
+        turnLEDON(timeout=timeout)
 
-def turnLEDON():
+
+def turnLEDON(timeout = 0.02):
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
     GPIO.output(7, True)
+    time.sleep(timeout)
 
-def turnLEDOFF():
+def turnLEDOFF(timeout = 0.02):
+    time.sleep(timeout)
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
     GPIO.output(7, False)
@@ -513,13 +521,12 @@ def closeDevice():
     else:
         printFLload("ERROR: Failed to close connection between Fingerprint Scanner Module. was the device already closed? Was it initialized int he first place?")
         result = 0
-    turnLEDOFF()
+    turnLEDOFF(timeout=1)
     return result
 # function to toggle LED value. Default call turns off the LED in the scanner.
 def setLED(sval = False):
     # print "Setting LED value to " + str(sval)
     result = localFPS.CmosLed(led = sval)
-
 
     # print "SET LED Function ret Value: " + str(result)
     return result
@@ -538,8 +545,7 @@ def checkSlot():
         # not occupied
             printOKload("Found empty index at slot " + str(n))
             turnLEDON()
-            time.sleep(0.00001)
-            turnLEDOFF()
+            turnLEDOFF(timeout=0.05)
             return n
             break
         elif(ret == [None, None]):
@@ -556,6 +562,7 @@ def reCatch():
         if localFPS.IsPressFinger() == [1,0]:
             setLED(sval = False)
             time.sleep(0.2)
+            setprocLED(state=True)
             setLED(sval = True)
             # TODO : implement light led to do something, like a red light.
             ledagain = 1 # gibberish
@@ -577,6 +584,7 @@ def enrollSeq(): #parameters are still undef.
         printOKload("Scanner is now ready to accept the fingerprint.")
     elif (localFPS.EnrollStart(ID = slot) == [4105, 0]):
         printFLload("Scanner has failed to initialize enrollment sequence.")
+        turnLEDON()
         # erase (delete) 1st item in the scanner, and store it there.
         # TODO : implement automated deletion.
     else: 
@@ -589,7 +597,7 @@ def enrollSeq(): #parameters are still undef.
         # [4109,0] = Fingerprint has already been registered.
         # [4108,0] = Faulty Fingerprint.
         if (localFPS.IsPressFinger() == [None, None]):
-            # 
+            setprocLED(state=False)
             if localFPS.CaptureFinger() == [None, None]:
                 # then do enrollment
                 res = localFPS.Enroll1(ID = slot)
@@ -619,7 +627,7 @@ def enrollSeq(): #parameters are still undef.
         # [4109,0] = Fingerprint has already been registered.
         # [4108,0] = Faulty Fingerprint.
         if (localFPS.IsPressFinger() == [None, None]):
-            
+            setprocLED(state=False)
             if localFPS.CaptureFinger() == [None, None]:
                 # then do enrollment
                 res = localFPS.Enroll2(ID = slot)
@@ -651,7 +659,7 @@ def enrollSeq(): #parameters are still undef.
         # [4108,0] = Faulty Fingerprint.
         if (localFPS.IsPressFinger() == [None, None]):
             if localFPS.CaptureFinger() == [None, None]:
-                # then do enrollment
+                setprocLED(state=False)
                 res = localFPS.Enroll3(ID = slot)
                 if (res == [None, None]):
                     # no problems found. continue.
@@ -674,6 +682,7 @@ def enrollSeq(): #parameters are still undef.
                     return -2
     # turn off LED
     setLED(sval = False)
+    setprocLED(state=False)
     printOKload("Succesfully enrolled Fingerprint at slot: " + str(slot) + "!")
     while True:
         printWorkload("Please input your Student ID:")
@@ -685,6 +694,9 @@ def enrollSeq(): #parameters are still undef.
             snt = sendInfo(ID = slot, sID = sID, sType = "Register")
             if snt == True:
                 # sent successfully.
+                setprocLED(timeout=0.5, state=True)
+                printWorkload("Enrollment Successful!")
+                turnLEDOFF()
                 break
             else:
                 # save locally:
@@ -715,6 +727,7 @@ def indentifyFingerprint():
     setLED(sval = True)
     printWorkload("Now scanning for fingerprints: Press 'Enter' to stop.")
     res = None
+    setprocLED(state=True)
 
     while True:
         # print 'Testing..'
@@ -729,7 +742,7 @@ def indentifyFingerprint():
         # [4109,0] = Fingerprint has already been registered.
         # [4108,0] = Faulty Fingerprint.
         if (localFPS.IsPressFinger() == [None, None]):
-            # 
+            setprocLED(state=False)
             if localFPS.CaptureFinger() == [None, None]:
                 # then do enrollment
                 res = localFPS.Identify()
@@ -750,6 +763,9 @@ def indentifyFingerprint():
                     res = None
             reCatch()
     printWorkload("Exiting Indentification loop")
+
+    setLED(sval=False)
+    setprocLED(state=False)
     return res
 
 # function to send any detected fingerprints scans to the database.
