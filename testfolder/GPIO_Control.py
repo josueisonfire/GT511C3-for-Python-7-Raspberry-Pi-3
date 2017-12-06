@@ -23,7 +23,7 @@ def dim(pt = 0.001):
         time.sleep(pause_time)
     GPIO.cleanup()
 
-def turnLEDON():
+def turnLEDON(pt = 0.001):
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
@@ -35,7 +35,7 @@ def turnLEDON():
         time.sleep(pause_time)
     GPIO.cleanup()
 
-def turnLEDOFF():
+def turnLEDOFF(pt = 0.001):
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(7, GPIO.OUT)
