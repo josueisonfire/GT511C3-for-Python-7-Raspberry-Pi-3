@@ -762,7 +762,7 @@ while True:
         else:
             printFLload("Failed to delete all fp templates. Either because there was a connection eorro or there are no templates to delete.")
         # Start deletion sequence
-    elif inp == "exit" or inp == "Exit" or inp == "Quit" or inp == "quit" or inp == "e" or inp == "E":
+    elif inp == "exit" or inp == "Exit" or inp == "Quit" or inp == "quit" or inp == "X" or inp == "x":
         closeDevice()
         sys.exit()
         # start exit sequence.
