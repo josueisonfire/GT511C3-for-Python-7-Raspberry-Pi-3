@@ -683,6 +683,7 @@ def indentifyFingerprint():
         if msvcrt.kbhit():
             if ord(msvcrt.getch()) == 27:
                 break
+        print "looping... "
         # [None, None] = no issues.
         # [4109,0] = Fingerprint has already been registered.
         # [4108,0] = Faulty Fingerprint.
