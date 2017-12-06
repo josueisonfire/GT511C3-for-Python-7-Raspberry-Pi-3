@@ -371,7 +371,7 @@ class Commands():
             raise NotOpenError('Please, open the port first!')
         response = self._f.Identify()
         if response[0]['ACK'] == True:
-            printOKload("Identified Fp at slot: " + response[0]['Parameter'])
+            printOKload("Identified Fp at slot: " + str(response[0]['Parameter']))
             if response[0]['Parameter'] == None:
                 printFLload("We have a problem: the scanner won't return a valid ID value.")
                 return -1
