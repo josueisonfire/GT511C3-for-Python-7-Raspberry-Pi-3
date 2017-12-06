@@ -511,6 +511,7 @@ def checkSlot():
 def reCatch():
     while True:
         if localFPS.IsPressFinger() == [1,0]:
+            setLED(sval = False)
             time.sleep(0.2)
             setLED(sval = True)
             # TODO : implement light led to do something, like a red light.
