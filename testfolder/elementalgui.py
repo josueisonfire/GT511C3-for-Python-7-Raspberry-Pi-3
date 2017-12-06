@@ -188,7 +188,13 @@ class Commands():
                 return [None, None]
             # if the fp slot is populated:
             elif (response[0]['ACK'] == False):
-                return [None, 0]
+                if (str(response[0]['Parameter']) == str(0x1004)):
+                    #the specified field is not used.
+                    print "HURRAY!"
+                    return [None, 0]
+                else:
+                    printFLload("Invalid paramter in checkEnroll Method.")
+                    return [None, 0]
             else:
                 #ERROR
                 return [0,2]
