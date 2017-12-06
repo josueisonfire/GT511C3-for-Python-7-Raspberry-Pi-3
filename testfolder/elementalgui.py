@@ -712,7 +712,7 @@ def indentifyFingerprint():
                     printOKload("SCANNER HAS IDENTIFIED FINGERPRINT WITH ID: " + str(res))
                     sendInfo(ID = res, sType = "Attendance")
                     res = None
-        reCatch()
+            reCatch()
     printWorkload("Exiting Indentification loop")
     return res
 
