@@ -189,7 +189,7 @@ class Commands():
             # if the fp slot is populated:
             elif (response[0]['ACK'] == False):
                 print "response[0]['Parameter'] has value of: " + str(response[0]['Parameter'])
-                if (response[0]['Parameter'] == 0x1004):
+                if (response[0]['Parameter'] == 4100):
                     #the specified field is not used.
                     print "HURRAY!"
                     return [None, 0]
