@@ -21,7 +21,7 @@ def dim(pt = 0.001):
     for i in range(100, -1, -1):
         led.ChangeDutyCycle(i)
         time.sleep(pause_time)
-    GPIO.cleanup()
+    
 
 def turnLEDON(pt = 0.001):
     GPIO.setwarnings(False)
@@ -33,7 +33,6 @@ def turnLEDON(pt = 0.001):
     for i in range(0, 100+1):
         led.ChangeDutyCycle(i)
         time.sleep(pause_time)
-    GPIO.cleanup()
 
 def turnLEDOFF(pt = 0.001):
     GPIO.setwarnings(False)
@@ -45,7 +44,10 @@ def turnLEDOFF(pt = 0.001):
     for i in range(100, -1, -1):
         led.ChangeDutyCycle(i)
         time.sleep(pause_time)
+        
+def cleanup():
     GPIO.cleanup()
+
 
 dim()
 
