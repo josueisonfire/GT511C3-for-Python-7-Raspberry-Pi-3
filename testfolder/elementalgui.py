@@ -727,9 +727,9 @@ def sendInfo(ID,sID,sType):
     if sType == "Register":
         data = {'method': sType, 'sid':str(sID), 'fid': str(ID)}
         # server address
-        server = 'http://172.16.23.189:5000/bluesmoke'
     elif sType == "Attendance":
         data = {'method' : sType, 'fid': str(ID)}
+    server = 'http://172.16.23.189:5000/bluesmoke'
     postData(server,data)
     return True
 
