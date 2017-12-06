@@ -360,32 +360,46 @@ class Commands():
         else:
             return [None, None]
         
-
+    # ret vals:
+    # [0,0] = port not open
+    # [0,1] = No fp template matched.
+    # [0,3] = Communication error.
+    # [param, 0] = scanner found the following match
     def Identify(self, *args, **kwargs):
         if not self.open:
+            return [0,0]
             raise NotOpenError('Please, open the port first!')
         response = self._f.Identify()
-        if not response[0]['ACK']:
-            raise NackError(response[0]['Parameter'])
-        return [response[0]['Parameter'], None]
+        if response[0]['ACK'] == True:
+            return int(response[0]['Parameter'])
+        else:
+            # ACK was false:
+            if response[0]['Parameter'] ==  4102:
+                printFLload("ERR: Communication error has occurred.")
+                return [0,3]
+            elif response[0]['Parameter'] == 4104:
+                # normal. Means the scanner found no such FP.
+                return [0,1]
 
 # Messy code. FIX LATER.
     def CaptureFinger(self, *args, **kwargs):
         if not self.open:
             return [0,0]
             raise NotOpenError('Please, open the port first!')
-
+        # parameter to tell the scanner to capture the best img possible.
         best_image = 1
         if len(args) > 0:
             best_image = args[0]
         response = self._f.CaptureFinger(best_image)
         if not response[0]['ACK']:
-            raise NackError(response[0]['Parameter'])
+            if response[0]['Parameter'] == 4114:
+                printFLload("ERR: Finger is not pressed for finger capture.")
+            else:
+                printFLload("ERR: Unexpected error.")
         else:
             # ACK == true
             return [None, None]
         
-
     def GetImage(self, *args, **kwargs):
         if not self.open:
             raise NotOpenError('Please, open the port first!')
@@ -487,7 +501,7 @@ def closeDevice():
     return result
 # function to toggle LED value. Default call turns off the LED in the scanner.
 def setLED(sval = False):
-    print "Setting LED value to " + str(sval)
+    # print "Setting LED value to " + str(sval)
     result = localFPS.CmosLed(led = sval)
     # print "SET LED Function ret Value: " + str(result)
     return result
@@ -578,7 +592,6 @@ def enrollSeq(): #parameters are still undef.
                     printFLload("ERR: Unparsed Error. Aborting...")
                     return -2
            
-       
     threshhold = 3
     while True:
         # [None, None] = no issues.
@@ -643,6 +656,39 @@ def enrollSeq(): #parameters are still undef.
 
     return True
 
+# Function to identify fingerprint:
+def indentifyFingerprint():
+    #Turn on the LED:
+    setLED(sval = True)
+    printWorkload("Now scanning for fingerprints:")
+    res = None
+    while True:
+        # [None, None] = no issues.
+        # [4109,0] = Fingerprint has already been registered.
+        # [4108,0] = Faulty Fingerprint.
+        if (localFPS.IsPressFinger() == [None, None]):
+            # 
+            if localFPS.CaptureFinger() == [None, None]:
+                # then do enrollment
+                res = localFPS.Identify()
+                if res == [0,0]:
+                    printFLload("Port is not opened")
+                    return -1
+                elif res == [0,1]:
+                # no matching FP template
+                    printFLload("Scanner has not found a matching fingerprint.")
+                    return -1
+                elif res == [0,3]:
+                # COMMS error
+                    printFLload("Communication ERROR!")
+                    return -1
+                else:
+                    printOKload("SCANNER HAS IDENTIFIED FINGERPRINT WITH ID: " + str(res))
+                    break
+    reCatch()
+    return res
+
+
 # function to connect the module to the remote database.
 def dbaseConnect():
     return True
@@ -661,6 +707,7 @@ def printFLload(msg):
 
 def printWorkload(msg):
     print bcolors.WARNING + msg + bcolors.ENDC
+
 
 # THE GUI code.
 
@@ -683,14 +730,16 @@ setLED(sval = True)
 time.sleep(0.2)
 setLED()
 
-ret = localFPS.DeleteAll()
-if ret == [None, None]:
-    printOKload("Deleted all Fingerprint templates:")
-else:
-    printFLload("Failed to delete all fp templates")
+# SOME TEST code to see if 
+# ret = localFPS.DeleteAll()
+# if ret == [None, None]:
+#     printOKload("Deleted all Fingerprint templates:")
+# else:
+#     printFLload("Failed to delete all fp templates")
 
 enrollSeq()
 
+indentifyFingerprint()
 
 closeDevice()
 localFPS._update_status()
