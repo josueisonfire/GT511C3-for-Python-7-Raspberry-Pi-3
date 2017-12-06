@@ -7,6 +7,7 @@ import select
 from threading import Timer
 from exceptions import *
 import fingerpi as fp
+import GPIO_Control
 
 # Global variables:
 port = '/dev/ttyAMA0'
@@ -450,16 +451,19 @@ localFPS = Commands()
 
 # code to init device. check availability of the port, and determines whether the fingerprint reader is connected or not.
 def initializeDevice():
+    dim()
     if (localFPS.Initialize() == [None, None]):
         printOKload("Succesfully initialized device.")
         result = 1
     else:
         printFLload("ERROR: Failed to initialize device. Check the connection, device power status, or connections.")
         result = 0
+    dim()
     return result
 
 # function to adjuct baud rate.
 def setBaudrate(brate = 9600):
+    turnLEDON()
     printWorkload("Setting baud rate to device...")
     if (localFPS.ChangeBaudrate(baudrate = brate) == [None, None]):
         printOKload("Succesfully set baud rate of the device.")
@@ -467,10 +471,12 @@ def setBaudrate(brate = 9600):
     else:
         printFLload("ERROR: Failed to set baud rate. check device connetions and baud rate value parameter values.")
         result = 0
+    turnLEDOFF()
     return result
 
 # function to open the connection between the controller and the scanner.
 def openDevice():
+    turnLEDON()
     printWorkload("Opening port to GT511C3 Fingerprint Scanner Module...")
     if (localFPS.Open() == [None, None]):
         printOKload("Succesfully opened port to device.")
@@ -478,10 +484,12 @@ def openDevice():
     else:
         printFLload("ERROR: Failed to open port to device. Check the connection, device power status, or connections.")
         result = 0
+    turnLEDOFF()
     return result
 
 # function to close connection between the controller and FPS.
 def closeDevice():
+    turnLEDON()
     printWorkload("Closing port to GT511C3 Fingerprint Scanner Module...")
     if (localFPS.Close() == [None, None]):
         printOKload("Succesfully closed port to device.")
@@ -489,11 +497,18 @@ def closeDevice():
     else:
         printFLload("ERROR: Failed to close connection between Fingerprint Scanner Module. was the device already closed? Was it initialized int he first place?")
         result = 0
+    turnLEDOFF()
     return result
 # function to toggle LED value. Default call turns off the LED in the scanner.
 def setLED(sval = False):
     # print "Setting LED value to " + str(sval)
     result = localFPS.CmosLed(led = sval)
+
+    # if sval == False:
+    #     turnLEDOFF()
+    # else:
+    #     turnLEDON()
+
     # print "SET LED Function ret Value: " + str(result)
     return result
 
@@ -510,6 +525,9 @@ def checkSlot():
         if (ret == [None, 0]):
         # not occupied
             printOKload("Found empty index at slot " + str(n))
+            turnLEDON()
+            time.sleep(0.00001)
+            turnLEDOFF()
             return n
             break
         elif(ret == [None, None]):

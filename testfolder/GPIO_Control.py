@@ -4,16 +4,22 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(7, GPIO.OUT)
 
-def dim():
-    red_led = GPIO.PWM(7, 100)
-    red_led.start(0)
-    pause_time = 0.010
+led = GPIO.PWM(7, 100)
+led.start(0)
+
+# slightly light up LED.
+def dim(pt = 0.001):
+    pause_time = pt
     for i in range(0, 100+1):
-        red_led.ChangeDutyCycle(i)
+        led.ChangeDutyCycle(i)
         time.sleep(pause_time)
     for i in range(100, -1, -1):
-        red_led.ChangeDutyCycle(i)
+        led.ChangeDutyCycle(i)
         time.sleep(pause_time)
     GPIO.cleanup()
 
-dim()
+def turnLEDON():
+    GPIO.output(7, True)
+
+def turnLEDOFF():
+    GPIO.output(7, False)
