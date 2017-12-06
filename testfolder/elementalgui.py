@@ -251,11 +251,11 @@ class Commands():
             return [None, None]
         elif response[0]['ACK'] == False:
             # if ack param was false, that is, there was an error:
-            if response[0]['Parameters'] == 4109:
+            if response[0]['Parameter'] == 4109:
                 # enroll failed.
                 # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
                 return [4109, 0]
-            elif response[0]['Parameters'] == 4108:
+            elif response[0]['Parameter'] == 4108:
                 # bad finger.
                 # printFLload("ERR: Bad fingerprint. Please try again.")
                 return [4108, 0]
@@ -278,11 +278,11 @@ class Commands():
             return [None, None]
         elif response[0]['ACK'] == False:
             # if ack param was false, that is, there was an error:
-            if response[0]['Parameters'] == 4109:
+            if response[0]['Parameter'] == 4109:
                 # enroll failed.
                 # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
                 return [4109, 0]
-            elif response[0]['Parameters'] == 4108:
+            elif response[0]['Parameter'] == 4108:
                 # bad finger.
                 # printFLload("ERR: Bad fingerprint. Please try again.")
                 return [4108, 0]
@@ -305,11 +305,11 @@ class Commands():
             return [None, None]
         elif response[0]['ACK'] == False:
             # if ack param was false, that is, there was an error:
-            if response[0]['Parameters'] == 4109:
+            if response[0]['Parameter'] == 4109:
                 # enroll failed.
                 # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
                 return [4109, 0]
-            elif response[0]['Parameters'] == 4108:
+            elif response[0]['Parameter'] == 4108:
                 # bad finger.
                 # printFLload("ERR: Bad fingerprint. Please try again.")
                 return [4108, 0]
