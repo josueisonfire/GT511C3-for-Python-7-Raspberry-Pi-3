@@ -709,7 +709,7 @@ def indentifyFingerprint():
                 elif res == [0,1]:
                 # no matching FP template
                     printFLload("Scanner has not found a matching fingerprint.")
-                    return -1
+                    
                 elif res == [0,3]:
                 # COMMS error
                     printFLload("Communication ERROR!")
