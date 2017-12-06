@@ -539,10 +539,6 @@ def setLED(sval = False):
     # print "Setting LED value to " + str(sval)
     result = localFPS.CmosLed(led = sval)
 
-    if sval == False:
-        turnLEDOFF()
-    else:
-        turnLEDON()
 
     # print "SET LED Function ret Value: " + str(result)
     return result
