@@ -712,7 +712,7 @@ def indentifyFingerprint():
     return res
 
 # function to send any detected fingerprints scans to the database.
-def sendInfo(ID,sID=None,sType):
+def sendInfo(ID,sID,sType):
     if sType == "Register":
         data = {'method': sType, 'sid':str(sID), 'fid': str(ID)}
         # server address
