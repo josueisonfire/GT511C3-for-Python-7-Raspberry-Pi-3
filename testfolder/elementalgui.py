@@ -683,7 +683,7 @@ def heardEnter():
 def indentifyFingerprint():
     #Turn on the LED:
     setLED(sval = True)
-    printWorkload("Now scanning for fingerprints: Press 'q' to stop.")
+    printWorkload("Now scanning for fingerprints: Press 'Enter' to stop.")
     res = None
 
     while True:
@@ -716,7 +716,7 @@ def indentifyFingerprint():
                     return -1
                 else:
                     printOKload("SCANNER HAS IDENTIFIED FINGERPRINT WITH ID: " + str(res))
-                    sendInfo(ID = res, sType = "Attendance")
+                    sendInfo(ID = res, sID = None, sType = "Attendance")
                     res = None
             reCatch()
     printWorkload("Exiting Indentification loop")
