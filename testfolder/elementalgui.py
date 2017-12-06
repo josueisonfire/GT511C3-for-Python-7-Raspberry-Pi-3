@@ -509,7 +509,6 @@ def checkSlot():
 # function to make user reapply fingerprint to the scanner, without continuously looping.
 # once a fingerprint has been taken out, it will light up the light after 0.2 secs and available to take the next fp.
 def reCatch():
-    setLED(sval = False)
     while True:
         if localFPS.IsPressFinger() == [1,0]:
             time.sleep(0.2)
