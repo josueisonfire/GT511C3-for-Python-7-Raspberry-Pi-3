@@ -263,7 +263,7 @@ class Commands():
                 # unexpected error.
                 return [0,2]
 
-    def Enroll2(self, *args, **kwargs):
+    def Enroll2(self, ID, *args, **kwargs):
         # ERROR CODES: 
         # [0,0] = port not open
         # [0,2] = invalid params.
@@ -290,7 +290,7 @@ class Commands():
                 # unexpected error.
                 return [0,2]
 
-    def Enroll3(self, *args, **kwargs):
+    def Enroll3(self, ID, *args, **kwargs):
         # ERROR CODES: 
         # [0,0] = port not open
         # [0,2] = invalid params.
@@ -538,7 +538,7 @@ def enrollSeq(): #parameters are still undef.
         # [4108,0] = Faulty Fingerprint.
         if (localFPS.IsPressFinger() == [None, None]):
             # 
-            res = localFPS.Enroll1()
+            res = localFPS.Enroll1(ID = slot)
             if (res == [None, None]):
                 # no problems found. continue.
                 printOKload("First Enrollment Successfull!")
@@ -563,7 +563,7 @@ def enrollSeq(): #parameters are still undef.
         # [4108,0] = Faulty Fingerprint.
         if (localFPS.IsPressFinger() == [None, None]):
             # 
-            res = localFPS.Enroll2()
+            res = localFPS.Enroll2(ID = slot)
             if (res == [None, None]):
                 # no problems found. continue.
                 printOKload("Second Enrollment Successfull!")
@@ -589,7 +589,7 @@ def enrollSeq(): #parameters are still undef.
         # [4108,0] = Faulty Fingerprint.
         if (localFPS.IsPressFinger() == [None, None]):
             # 
-            res = localFPS.Enroll3()
+            res = localFPS.Enroll3(ID = slot)
             if (res == [None, None]):
                 # no problems found. continue.
                 printOKload("Third Enrollment Successfull!")
