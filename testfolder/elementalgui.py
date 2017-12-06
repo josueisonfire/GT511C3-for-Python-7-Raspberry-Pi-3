@@ -219,7 +219,7 @@ class Commands():
         # ret = [False, None]
         while True:
             # <INPUT digit param here.>
-            response = self._f.EnrollStart(int(ID))
+            response = self._f.EnrollStart(ID)
             if response[0]['ACK']:
                 return [None, None]
                 break
@@ -533,17 +533,16 @@ def enrollSeq(): #parameters are still undef.
     # check ID slots until they are unoccupied. If all are occupied, send FULL error. and delete the first in the list.
     slot = checkSlot()
     # start enrollment @ specified ID.
-    while True:
-        if (localFPS.EnrollStart(ID = slot) == [None, None]):
-            # ack
-            # do stuff.
-            break
-        elif (localFPS.EnrollStart(ID = slot) == [4105, 0]):
-            # erase (delete) 1st item in the scanner, and store it there.
-            # TODO : implement automated deletion.
-            break
-        else: 
-            return -1 #error!
+    if (localFPS.EnrollStart(ID = slot) == [None, None]):
+        printOKload("Scanner is now ready to accept the fingerprint.")
+        break
+    elif (localFPS.EnrollStart(ID = slot) == [4105, 0]):
+        printFLload("Scanner has failed to initialize enrollment sequence.")
+        # erase (delete) 1st item in the scanner, and store it there.
+        # TODO : implement automated deletion.
+        break
+    else: 
+        return -1 #error!
     # if perm = [None, None], we're good to go.
     # do first enrollment. figure out how to 1) send the enroll 
     threshhold = 3
