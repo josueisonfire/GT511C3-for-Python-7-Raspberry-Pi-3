@@ -3,7 +3,7 @@ import sys
 import requests
 import struct
 import time
-import keyboard
+import select
 from threading import Timer
 from exceptions import *
 import fingerpi as fp
@@ -670,6 +670,15 @@ def enrollSeq(): #parameters are still undef.
     
     return True
 
+# Helper function for IndentifyFingerprint method.
+def heardEnter():
+    i,o,e = select.select([sys.stdin],[],[],0.0001)
+    for s in i:
+        if s == sys.stdin:
+            input = sys.stdin.readline()
+            return True
+    return False
+
 # Function to identify fingerprint:
 def indentifyFingerprint():
     #Turn on the LED:
@@ -680,15 +689,12 @@ def indentifyFingerprint():
     while True:
         # print 'Testing..'
         # body of the loop ...
-        try: #used try so that if user pressed other than the given key error will not be shown
-            if keyboard.is_pressed('q'):#if key 'q' is pressed 
-                print('Exiting...')
-                break#finishing the loop
-            else:
-                pass
-        except:
-            # ignore all other inputs
+        
+        if heardEnter() == True:
+            break
+        else:
             pass
+
         # [None, None] = no issues.
         # [4109,0] = Fingerprint has already been registered.
         # [4108,0] = Faulty Fingerprint.
