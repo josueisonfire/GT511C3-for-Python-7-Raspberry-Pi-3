@@ -1,5 +1,5 @@
 # imports & other misc stuff.
-
+import sys
 import struct
 import time
 from threading import Timer
@@ -35,7 +35,7 @@ class Commands():
             str(self._firmware),
             str(self._serial_no)
         )
-        printWorkload("FPS Status: Port:" + str(self.status) + " baudrate: " + str(self._baudrate) + " firmware: " + str(self._firmware) + " serial no.:" + str(self._serial_no))
+        printWorkload("FPS Status: Port:" + str(__status) + " baudrate: " + str(self._baudrate) + " firmware: " + str(self._firmware) + " serial no.:" + str(self._serial_no))
 # ERROR CODES:
 # [0,0] = device is already initialized.
 # [0,1] = device's port is not reachable.
@@ -371,11 +371,16 @@ class Commands():
             raise NotOpenError('Please, open the port first!')
         response = self._f.Identify()
         if response[0]['ACK'] == True:
-            return int(response[0]['Parameter'])
+            printOKload("Identified Fp at slot: " + response[0]['Parameter'])
+            if response[0]['Parameter'] == None:
+                printFLload("We have a problem: the scanner won't return a valid ID value.")
+                return -1
+            else:
+                return int(response[0]['Parameter'])
         else:
             # ACK was false:
-            if response[0]['Parameter'] ==  4102:
-                printFLload("ERR: Communication error has occurred.")
+            if response[0]['Parameter'] ==  4105:
+                printFLload("ERR: Scanner does not have any templates.")
                 return [0,3]
             elif response[0]['Parameter'] == 4104:
                 # normal. Means the scanner found no such FP.
@@ -400,7 +405,7 @@ class Commands():
             # ACK == true
             return [None, None]
         
-    def GetImage(self, *args, **kwargs):
+
         if not self.open:
             raise NotOpenError('Please, open the port first!')
         response = self._f.GetImage()
@@ -718,28 +723,47 @@ print bcolors.WARNING + bcolors.BOLD + "CLOUD-BAS: version [alpha] 0.17. SUNY KO
 result = 0
 initializeDevice()
 time.sleep(0.1)
-localFPS._update_status()
 # open device
 openDevice()
-localFPS._update_status()
 # change baud rate
 setBaudrate(brate = 115200)
-localFPS._update_status()
 
 setLED(sval = True)
 time.sleep(0.2)
 setLED()
 
-# SOME TEST code to see if 
-# ret = localFPS.DeleteAll()
-# if ret == [None, None]:
-#     printOKload("Deleted all Fingerprint templates:")
-# else:
-#     printFLload("Failed to delete all fp templates")
-
-enrollSeq()
-
-indentifyFingerprint()
-
-closeDevice()
 localFPS._update_status()
+
+# Main GUI loop
+while True:
+    printWorkload("Select a desired operation:\n (S)how information, (E)nroll , (I)dentify, (C)hange baud rate, (D)elete template/s, E(x)it.")
+    inp = input("Enter Command: ")
+    if inp == "E" or inp == "e":
+        # start enrollment sequence.
+        enrollSeq()
+    elif inp == "i" or inp == "I":
+        # Start Indentification sequence.
+        indentifyFingerprint()
+    elif inp == "C" or inp == "c":
+        # start change baud rate sequence.
+        cbrt = input("input the desired baud rate. 9600, 14400, 19200, 28800, 38400, 57600, 115200.")
+        if cbrt.isdigit():
+            if int(cbrt) == 9600 or int(cbrt) == 14400 or int(cbrt) == 19200 or int(cbrt) == 28800 or int(cbrt) == 38400 or int(cbrt) == 57600 or int(cbrt) == 115200:
+                setBaudrate(brate = cbrt)
+        else:
+            printWorkload("ERROR: Invalid Baud rate value input. Please check you input and try again.")
+    elif inp == "S" or inp == "s":
+        localFPS._update_status()
+        # start show info sequence
+    elif inp == "d" or inp == "D":
+        ret = localFPS.DeleteAll()
+        if ret == [None, None]:
+            printOKload("Deleted all Fingerprint templates:")
+        else:
+            printFLload("Failed to delete all fp templates. Either because there was a connection eorro or there are no templates to delete.")
+        # Start deletion sequence
+    elif inp == "exit" or inp == "Exit" or inp == "Quit" or inp == "quit" or inp == "e" or inp == "E":
+        closeDevice()
+        sys.exit()
+        # start exit sequence.
+
