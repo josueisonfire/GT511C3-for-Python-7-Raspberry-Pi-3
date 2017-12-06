@@ -737,7 +737,7 @@ localFPS._update_status()
 # Main GUI loop
 while True:
     printWorkload("Select a desired operation:\n (S)how information, (E)nroll , (I)dentify, (C)hange baud rate, (D)elete template/s, E(x)it.")
-    inp = input("Enter Command: ")
+    inp = raw_input("Enter Command: ")
     if inp == "E" or inp == "e":
         # start enrollment sequence.
         enrollSeq()
