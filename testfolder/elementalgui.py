@@ -726,6 +726,7 @@ while True:
             printFLload("Failed to delete all fp templates. Either because there was a connection eorro or there are no templates to delete.")
         # Start deletion sequence
     elif inp == "exit" or inp == "Exit" or inp == "Quit" or inp == "quit" or inp == "X" or inp == "x":
+        setLED(sval = False)
         closeDevice()
         sys.exit()
         # start exit sequence.
