@@ -616,7 +616,7 @@ def enrollSeq(): #parameters are still undef.
                         printFLload("ERR: fingerprint has already been registered. Aborting...")
                         return -1
                 else:
-                    printFLload("ERR: Unparsed Error. Aborting...")
+                    printFLload("ERR: Unparsed Error. ERROR CODE: " + str(res) + "Aborting...")
                     return -2
     # turn off LED
     setLED(sval = False)
