@@ -117,7 +117,7 @@ def decode_command_packet(packet):
     #response['Parameter'] = errors(packet[3]) if (not response['ACK'] and packet[3] in errors) else packet[3]
 
     #print "response Param: " + str(errors(packet[3]))
-    print "packet [3] info: " + str(packet[3])
+    print "packet [3] info: " + str(hex(packet[3]))
 
 
 
