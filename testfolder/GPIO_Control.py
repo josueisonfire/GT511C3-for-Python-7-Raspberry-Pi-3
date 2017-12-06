@@ -1,11 +1,5 @@
 import time
 import RPi.GPIO as GPIO
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(7, GPIO.OUT)
-
-led = GPIO.PWM(7, 100)
-led.start(0)
 
 # slightly light up LED.
 def dim(pt = 0.001):
@@ -21,6 +15,7 @@ def dim(pt = 0.001):
     for i in range(100, -1, -1):
         led.ChangeDutyCycle(i)
         time.sleep(pause_time)
+    GPIO.cleanup()
     
 
 def turnLEDON():
