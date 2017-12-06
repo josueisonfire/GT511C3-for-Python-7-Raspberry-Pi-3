@@ -579,16 +579,16 @@ def enrollSeq(): #parameters are still undef.
 # 0 normal execution.
     # Turn on LED light:
     setLED(sval = True)
-    turnLEDON(timeout=0)
 
     # check ID slots until they are unoccupied. If all are occupied, send FULL error. and delete the first in the list.
     slot = checkSlot()
     # start enrollment @ specified ID.
     if (localFPS.EnrollStart(ID = slot) == [None, None]):
         printOKload("Scanner is now ready to accept the fingerprint.")
+        turnLEDON()
     elif (localFPS.EnrollStart(ID = slot) == [4105, 0]):
         printFLload("Scanner has failed to initialize enrollment sequence.")
-        turnLEDON()
+        
         # erase (delete) 1st item in the scanner, and store it there.
         # TODO : implement automated deletion.
     else: 
