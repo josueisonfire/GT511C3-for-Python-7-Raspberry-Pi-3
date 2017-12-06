@@ -52,7 +52,7 @@ class Commands():
                 result = [0,1]
 
         # self._status = 'Initialized' # Change that to `closed`
-        self._update_status()
+        #self._update_status()
         return result
 # ERROR Codes:
 # [0,0] = device already open.
@@ -617,7 +617,7 @@ def enrollSeq(): #parameters are still undef.
                         printFLload("ERR: fingerprint has already been registered. Aborting...")
                         return -1
                 else:
-                    printFLload("ERR: Duplicate fingerprint already exists in local database. " + str(res) + " Aborting...")
+                    printFLload("ERR: Duplicate fingerprint already exists in local database.  Aborting...")
                     return -2
     # turn off LED
     setLED(sval = False)
