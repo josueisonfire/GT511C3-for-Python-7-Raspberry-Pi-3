@@ -291,14 +291,14 @@ class Commands():
                 return [0,2]
 
     def Enroll3(self, ID, *args, **kwargs):
-        # ERROR CODES: 
+        # ERROR CODES:
         # [0,0] = port not open
         # [0,2] = invalid params.
         # [4109,0] = Fingerprint has already been registered.
         # [4108,0] = Faulty Fingerprint.
         if not self.open:
             raise NotOpenError('Please, open the port first!')
-            return [0,0]
+            return [0, 0]
         response = self._f.Enroll3()
         if response[0]['ACK'] == True:
             # no issues.
@@ -315,7 +315,7 @@ class Commands():
                 return [4108, 0]
             else:
                 # unexpected error.
-                print "UNEX ERR:  " + str(response[0]['Parameter'])
+                print "ERR:  Duplicate ID found at slot: " + str(response[0]['Parameter'])
                 return [0,2]
 
     def DeleteID(self, *args, **kwargs):
@@ -617,7 +617,7 @@ def enrollSeq(): #parameters are still undef.
                         printFLload("ERR: fingerprint has already been registered. Aborting...")
                         return -1
                 else:
-                    printFLload("ERR: Unparsed Error. ERROR CODE: " + str(res) + " Aborting...")
+                    printFLload("ERR: Duplicate fingerprint already exists in local database. " + str(res) + " Aborting...")
                     return -2
     # turn off LED
     setLED(sval = False)
