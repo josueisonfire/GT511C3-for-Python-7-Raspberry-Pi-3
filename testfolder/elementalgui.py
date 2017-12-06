@@ -16,6 +16,9 @@ def setprocLED(timeout=0.02, state=False):
     else:
         turnLEDON(timeout=timeout)
 
+def toggleLED(timeout=0.5):
+    turnLEDON(timeout=timeout)
+    turnLEDOFF(timeout=0)
 
 def turnLEDON(timeout = 0.02):
     GPIO.setmode(GPIO.BOARD)
@@ -576,6 +579,7 @@ def enrollSeq(): #parameters are still undef.
 # 0 normal execution.
     # Turn on LED light:
     setLED(sval = True)
+    turnLEDON(timeout=0)
 
     # check ID slots until they are unoccupied. If all are occupied, send FULL error. and delete the first in the list.
     slot = checkSlot()
