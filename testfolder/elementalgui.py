@@ -511,14 +511,14 @@ def checkSlot():
 def reCatch():
     setLED(sval = False)
     while True:
-        if localFPS.IsPressFinger() == [None, None]:
-            # TODO : implement light led to do something, like a red light.
-            ledagain = 1 # gibberish
-        # do nothing. we want them to take the fingerprint off.
-        elif localFPS.IsPressFinger() == [1,0]:
+        if localFPS.IsPressFinger() == [1,0]:
             time.sleep(0.2)
             setLED(sval = True)
+            # TODO : implement light led to do something, like a red light.
+            ledagain = 1 # gibberish
             break
+            
+            
 
 
 # function to start the enrollment sequence.
