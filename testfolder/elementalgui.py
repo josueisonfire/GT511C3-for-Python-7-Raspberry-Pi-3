@@ -3,6 +3,7 @@ import sys
 import requests
 import struct
 import time
+import msvcrt
 from threading import Timer
 from exceptions import *
 import fingerpi as fp
@@ -675,7 +676,13 @@ def indentifyFingerprint():
     setLED(sval = True)
     printWorkload("Now scanning for fingerprints:")
     res = None
+
     while True:
+        # print 'Testing..'
+        # body of the loop ...
+        if msvcrt.kbhit():
+            if ord(msvcrt.getch()) == 27:
+                break
         # [None, None] = no issues.
         # [4109,0] = Fingerprint has already been registered.
         # [4108,0] = Faulty Fingerprint.
@@ -697,15 +704,19 @@ def indentifyFingerprint():
                     return -1
                 else:
                     printOKload("SCANNER HAS IDENTIFIED FINGERPRINT WITH ID: " + str(res))
-                    break
-    reCatch()
+                    sendInfo(ID = res, sType = "Attendance")
+        reCatch()
+    printWorkload("Exiting Indentification loop")
     return res
 
 # function to send any detected fingerprints scans to the database.
-def sendInfo(ID,sID,sType):
-    data = {'method': sType, 'sid':str(sID), 'fid': str(ID)}
-    # server address
-    server = 'http://172.16.23.189:5000/bluesmoke'
+def sendInfo(ID,sID=None,sType):
+    if sType == "Register":
+        data = {'method': sType, 'sid':str(sID), 'fid': str(ID)}
+        # server address
+        server = 'http://172.16.23.189:5000/bluesmoke'
+    elif sType == "Attendance":
+        data = {'method' : sType, 'fid': str(ID)}
     postData(server,data)
     return True
 
@@ -756,6 +767,7 @@ while True:
         enrollSeq()
     elif inp == "i" or inp == "I":
         # Start Indentification sequence.
+
         indentifyFingerprint()
     elif inp == "C" or inp == "c":
         # start change baud rate sequence.
