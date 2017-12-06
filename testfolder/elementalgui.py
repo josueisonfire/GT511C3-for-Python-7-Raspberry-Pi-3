@@ -520,11 +520,8 @@ setLED(sval = True)
 time.sleep(0.2)
 setLED()
 
-# enrollSeq()
+enrollSeq()
 
-localFPS.CheckEnrolled(ID = 1)
-
-localFPS.CheckEnrolled(ID = 100)
 
 closeDevice()
 localFPS._update_status()
