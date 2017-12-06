@@ -187,7 +187,7 @@ class Commands():
                 #ID is in use.
                 return [None, None]
             # if the fp slot is populated:
-        elif (response[0]['ACK'] == False):
+            elif (response[0]['ACK'] == False):
                 return [None, 0]
             else:
                 #ERROR
