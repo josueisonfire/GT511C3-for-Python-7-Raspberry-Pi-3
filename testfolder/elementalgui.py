@@ -224,13 +224,13 @@ class Commands():
                 return [None, None]
                 break
             elif response[0]['ACK'] == False:
-                if response[0]['Parameter'] = 4105:
+                if response[0]['Parameter'] == 4105:
                     printFLload("Enrollment Init Failed. DB is fUll.")
                     return [4105, 0]
-                elif response[0]['Parameter'] = 4099:
+                elif response[0]['Parameter'] == 4099:
                     printFLload("Enrollment Init failed. Invalid position given.")
                     return [4099, 0]
-                elif response[0]['Parameter'] = 4101:
+                elif response[0]['Parameter'] == 4101:
                     printFLload("Enrollment Init failed. Specified ID is already in use.")
                     return [4101, 0]
             break
@@ -255,7 +255,7 @@ class Commands():
                 # enroll failed.
                 # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
                 return [4109, 0]
-            elif response[0]['Parameters'] = 4108:
+            elif response[0]['Parameters'] == 4108:
                 # bad finger.
                 # printFLload("ERR: Bad fingerprint. Please try again.")
                 return [4108, 0]
@@ -282,7 +282,7 @@ class Commands():
                 # enroll failed.
                 # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
                 return [4109, 0]
-            elif response[0]['Parameters'] = 4108:
+            elif response[0]['Parameters'] == 4108:
                 # bad finger.
                 # printFLload("ERR: Bad fingerprint. Please try again.")
                 return [4108, 0]
@@ -309,7 +309,7 @@ class Commands():
                 # enroll failed.
                 # printFLload("ERR: Fingerprint at slot " + str(ID) + " has already been registered. If you want to try again, press <x>")
                 return [4109, 0]
-            elif response[0]['Parameters'] = 4108:
+            elif response[0]['Parameters'] == 4108:
                 # bad finger.
                 # printFLload("ERR: Bad fingerprint. Please try again.")
                 return [4108, 0]
