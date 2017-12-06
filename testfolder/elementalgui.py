@@ -460,9 +460,9 @@ def checkSlot():
             break
         elif(ret == [None, None]):
             printWorkload("index " + str(n) + " is occupied.")
-            n = n + 1
         else:
             printFLload("ERROR Ocurred while finding slot in scanner. Error code: " + str(ret))
+        n = n + 1
     return None
 
 # function to start the enrollment sequence.
