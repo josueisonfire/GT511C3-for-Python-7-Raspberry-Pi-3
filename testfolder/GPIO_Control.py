@@ -32,7 +32,7 @@ def cleanup():
     GPIO.cleanup()
 
 
-dim()
+# dim()
 
 turnLEDON()
 
